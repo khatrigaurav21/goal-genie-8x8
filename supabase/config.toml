@@ -1,0 +1,4 @@
+project_id = "zgtlxnjtuzejodqpglfd"
+
+[functions.generate-harada]
+verify_jwt = false
