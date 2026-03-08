@@ -9,13 +9,20 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { goal } = await req.json();
+    const { goal, language = "en" } = await req.json();
     if (!goal || typeof goal !== "string" || goal.trim().length === 0) {
       return new Response(JSON.stringify({ error: "Goal is required" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+
+    const langNames: Record<string, string> = {
+      en: "English", ja: "Japanese", es: "Spanish", fr: "French",
+      de: "German", pt: "Portuguese", zh: "Chinese", ko: "Korean",
+      ar: "Arabic", hi: "Hindi",
+    };
+    const langName = langNames[language] || "English";
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
@@ -27,7 +34,7 @@ Given a user's ambitious goal, generate a complete Harada Method grid with:
 
 Tasks should be concrete, measurable, and actionable. Each task should be a short phrase (3-8 words).
 
-CRITICAL: You MUST respond ENTIRELY in English. All pillar names and all tasks must be in English, regardless of the origin of the method. Do NOT use Japanese or any other language.
+CRITICAL: You MUST respond ENTIRELY in ${langName}. All pillar names and all tasks must be in ${langName}. Do NOT use any other language.
 
 You MUST respond using the provided tool.`;
 

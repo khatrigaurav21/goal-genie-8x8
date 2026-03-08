@@ -1,22 +1,37 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Sparkles, ArrowRight, Compass } from "lucide-react";
+import { Sparkles, ArrowRight, Compass, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link } from "react-router-dom";
 import ThemeToggle from "@/components/ThemeToggle";
 
+const LANGUAGES = [
+  { code: "en", label: "English" },
+  { code: "ja", label: "日本語" },
+  { code: "es", label: "Español" },
+  { code: "fr", label: "Français" },
+  { code: "de", label: "Deutsch" },
+  { code: "pt", label: "Português" },
+  { code: "zh", label: "中文" },
+  { code: "ko", label: "한국어" },
+  { code: "ar", label: "العربية" },
+  { code: "hi", label: "हिन्दी" },
+];
+
 interface GoalInputProps {
-  onGenerate: (goal: string) => void;
+  onGenerate: (goal: string, language: string) => void;
   isLoading: boolean;
 }
 
 export default function GoalInput({ onGenerate, isLoading }: GoalInputProps) {
   const [goal, setGoal] = useState("");
+  const [language, setLanguage] = useState("en");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (goal.trim()) onGenerate(goal.trim());
+    if (goal.trim()) onGenerate(goal.trim(), language);
   };
 
   const examples = [
@@ -75,32 +90,52 @@ export default function GoalInput({ onGenerate, isLoading }: GoalInputProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.5 }}
-            className="flex flex-col sm:flex-row gap-3 mb-8"
+            className="flex flex-col gap-3 mb-8"
           >
-            <Input
-              value={goal}
-              onChange={(e) => setGoal(e.target.value)}
-              placeholder="What is your one ambitious goal?"
-              className="flex-1 h-14 text-lg px-5 bg-card border-border focus:ring-primary font-sans"
-              disabled={isLoading}
-            />
-            <Button
-              type="submit"
-              disabled={!goal.trim() || isLoading}
-              className="h-14 px-8 text-base bg-primary text-primary-foreground hover:bg-primary/90 font-sans"
-            >
-              {isLoading ? (
-                <>
-                  <Sparkles className="w-5 h-5 mr-2 animate-spin" />
-                  Generating...
-                </>
-              ) : (
-                <>
-                  Generate My Plan
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </>
-              )}
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Input
+                value={goal}
+                onChange={(e) => setGoal(e.target.value)}
+                placeholder="What is your one ambitious goal?"
+                className="flex-1 h-14 text-lg px-5 bg-card border-border focus:ring-primary font-sans"
+                disabled={isLoading}
+              />
+              <Button
+                type="submit"
+                disabled={!goal.trim() || isLoading}
+                className="h-14 px-8 text-base bg-primary text-primary-foreground hover:bg-primary/90 font-sans"
+              >
+                {isLoading ? (
+                  <>
+                    <Sparkles className="w-5 h-5 mr-2 animate-spin" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    Generate My Plan
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </>
+                )}
+              </Button>
+            </div>
+
+            {/* Language selector */}
+            <div className="flex items-center justify-center gap-2">
+              <Globe className="w-4 h-4 text-muted-foreground" />
+              <span className="text-sm text-muted-foreground">Output language:</span>
+              <Select value={language} onValueChange={setLanguage}>
+                <SelectTrigger className="w-40 h-9 bg-card border-border text-sm">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {LANGUAGES.map((lang) => (
+                    <SelectItem key={lang.code} value={lang.code}>
+                      {lang.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </motion.form>
 
           {/* Examples */}
