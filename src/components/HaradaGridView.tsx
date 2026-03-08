@@ -113,9 +113,10 @@ export default function HaradaGridView({ data, onReset }: HaradaGridViewProps) {
   const handleDownload = async () => {
     if (!gridRef.current) return;
     try {
+      const isDark = document.documentElement.classList.contains("dark");
       const dataUrl = await toPng(gridRef.current, { 
         pixelRatio: 2,
-        backgroundColor: "#f5f0e8",
+        backgroundColor: isDark ? "#191d24" : "#f5f0e8",
       });
       const link = document.createElement("a");
       link.download = `haradaily-${data.goal.slice(0, 30).replace(/\s+/g, "-")}.png`;
