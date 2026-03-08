@@ -1,8 +1,8 @@
-import { useRef } from "react";
-import { motion } from "framer-motion";
+import { useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { buildGridCells, type HaradaGrid } from "@/lib/harada";
 import { toPng } from "html-to-image";
-import { Download, Share2 } from "lucide-react";
+import { Download, Link2, X as XIcon, Linkedin, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
