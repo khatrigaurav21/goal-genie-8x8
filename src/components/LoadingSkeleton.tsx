@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
 const PILLAR_COLORS_MUTED = [
@@ -18,8 +19,20 @@ const TIPS = [
   "Crafting your personal mandala…",
 ];
 
+function RotatingTips({ tips }: { tips: string[] }) {
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % tips.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [tips.length]);
+
+  return <span>{tips[index]}</span>;
+}
+
 export default function LoadingSkeleton({ goal }: { goal: string }) {
-  // Build a fake 9x9 grid for the skeleton
   const cells = Array.from({ length: 81 }, (_, i) => {
     const row = Math.floor(i / 9);
     const col = i % 9;
@@ -31,16 +44,12 @@ export default function LoadingSkeleton({ goal }: { goal: string }) {
     const isCenterBlock = blockRow === 1 && blockCol === 1;
     const isPillarCenter = localRow === 1 && localCol === 1 && !isCenter;
 
-    // Map block position to pillar index
     const blockMap: Record<string, number> = {
       "0,0": 0, "0,1": 1, "0,2": 2,
       "1,0": 3, "1,2": 4,
       "2,0": 5, "2,1": 6, "2,2": 7,
     };
-    const key = `${blockRow},${blockCol}`;
-    const pillarIdx = isCenterBlock
-      ? undefined
-      : blockMap[key];
+    const pillarIdx = isCenterBlock ? undefined : blockMap[`${blockRow},${blockCol}`];
 
     return { isCenter, isPillarCenter, pillarIdx, isCenterBlock };
   });
@@ -70,7 +79,6 @@ export default function LoadingSkeleton({ goal }: { goal: string }) {
           </p>
         </motion.div>
 
-        {/* Skeleton grid */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -89,13 +97,9 @@ export default function LoadingSkeleton({ goal }: { goal: string }) {
                     ? PILLAR_COLORS_MUTED[cell.pillarIdx]
                     : cell.pillarIdx !== undefined
                     ? `${PILLAR_COLORS_MUTED[cell.pillarIdx]}80`
-                    : cell.isCenterBlock && cell.isPillarCenter
-                    ? "hsl(var(--muted))"
                     : "hsl(40, 15%, 93%)",
                 }}
-                animate={{
-                  opacity: [0.4, 0.8, 0.4],
-                }}
+                animate={{ opacity: [0.4, 0.8, 0.4] }}
                 transition={{
                   duration: 1.8,
                   repeat: Infinity,
@@ -107,7 +111,6 @@ export default function LoadingSkeleton({ goal }: { goal: string }) {
           </div>
         </motion.div>
 
-        {/* Rotating tips */}
         <motion.div
           className="mt-6 text-sm text-muted-foreground"
           animate={{ opacity: [0.5, 1, 0.5] }}
@@ -119,18 +122,3 @@ export default function LoadingSkeleton({ goal }: { goal: string }) {
     </div>
   );
 }
-
-function RotatingTips({ tips }: { tips: string[] }) {
-  const [index, setIndex] = useState(0);
-
-  useState(() => {
-    const interval = setInterval(() => {
-      setIndex((prev) => (prev + 1) % tips.length);
-    }, 3000);
-    return () => clearInterval(interval);
-  });
-
-  return <span>{tips[index]}</span>;
-}
-
-import { useState } from "react";
