@@ -54,10 +54,15 @@ function MiniGrid({ data }: { data: typeof galleryItems[0]["data"] }) {
 
 export default function Gallery() {
   const [activeCategory, setActiveCategory] = useState<GalleryCategory | "All">("All");
+  const [selectedItem, setSelectedItem] = useState<HaradaGrid | null>(null);
 
   const filtered = activeCategory === "All"
     ? galleryItems
     : galleryItems.filter((item) => item.category === activeCategory);
+
+  if (selectedItem) {
+    return <HaradaGridView data={selectedItem} onReset={() => setSelectedItem(null)} />;
+  }
 
   return (
     <div className="min-h-screen bg-background paper-texture">
@@ -123,6 +128,7 @@ export default function Gallery() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1, duration: 0.4 }}
               className="group bg-card border border-border rounded-lg overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+              onClick={() => setSelectedItem(item.data)}
             >
               <div className="p-4">
                 <MiniGrid data={item.data} />
