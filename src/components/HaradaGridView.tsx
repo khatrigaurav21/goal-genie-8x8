@@ -6,39 +6,7 @@ import { Download, Link2, X as XIcon, Linkedin, ChevronDown, Check } from "lucid
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import ThemeToggle from "@/components/ThemeToggle";
-
-const PILLAR_COLORS = [
-  "hsl(4, 60%, 92%)",
-  "hsl(230, 30%, 92%)",
-  "hsl(150, 15%, 92%)",
-  "hsl(42, 50%, 92%)",
-  "hsl(320, 30%, 92%)",
-  "hsl(190, 30%, 92%)",
-  "hsl(270, 25%, 92%)",
-  "hsl(20, 40%, 92%)",
-];
-
-const PILLAR_DONE_COLORS = [
-  "hsl(4, 45%, 82%)",
-  "hsl(230, 22%, 82%)",
-  "hsl(150, 12%, 80%)",
-  "hsl(42, 38%, 82%)",
-  "hsl(320, 22%, 82%)",
-  "hsl(190, 22%, 80%)",
-  "hsl(270, 18%, 82%)",
-  "hsl(20, 30%, 82%)",
-];
-
-const PILLAR_BORDER_COLORS = [
-  "hsl(4, 60%, 75%)",
-  "hsl(230, 30%, 75%)",
-  "hsl(150, 15%, 70%)",
-  "hsl(42, 50%, 72%)",
-  "hsl(320, 30%, 75%)",
-  "hsl(190, 30%, 72%)",
-  "hsl(270, 25%, 75%)",
-  "hsl(20, 40%, 75%)",
-];
+import { usePillarColors } from "@/lib/theme-colors";
 
 interface HaradaGridViewProps {
   data: HaradaGrid;
