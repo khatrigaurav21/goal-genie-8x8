@@ -4,6 +4,7 @@ import { Sparkles, ArrowRight, Compass } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
+import ThemeToggle from "@/components/ThemeToggle";
 
 interface GoalInputProps {
   onGenerate: (goal: string) => void;
@@ -34,11 +35,14 @@ export default function GoalInput({ onGenerate, isLoading }: GoalInputProps) {
             原<span className="text-primary">日</span>
             <span className="text-sm font-sans font-normal text-muted-foreground ml-2">HaraDaily</span>
           </div>
-          <Link to="/gallery">
-            <Button variant="outline" size="sm">
-              <Compass className="w-4 h-4 mr-1" /> Gallery
-            </Button>
-          </Link>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <Link to="/gallery">
+              <Button variant="outline" size="sm">
+                <Compass className="w-4 h-4 mr-1" /> Gallery
+              </Button>
+            </Link>
+          </div>
         </div>
       </header>
 
