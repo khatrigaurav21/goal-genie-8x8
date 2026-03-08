@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Target, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import ThemeToggle from "@/components/ThemeToggle";
 import { galleryItems, type GalleryCategory } from "@/lib/gallery-data";
 import { buildGridCells, type HaradaGrid } from "@/lib/harada";
 import HaradaGridView from "@/components/HaradaGridView";
@@ -72,11 +73,14 @@ export default function Gallery() {
             原<span className="text-primary">日</span>
             <span className="text-sm font-sans font-normal text-muted-foreground ml-2">HaraDaily</span>
           </Link>
-          <Link to="/">
-            <Button variant="outline" size="sm">
-              <ArrowLeft className="w-4 h-4 mr-1" /> Create Your Own
-            </Button>
-          </Link>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <Link to="/">
+              <Button variant="outline" size="sm">
+                <ArrowLeft className="w-4 h-4 mr-1" /> Create Your Own
+              </Button>
+            </Link>
+          </div>
         </div>
       </header>
 

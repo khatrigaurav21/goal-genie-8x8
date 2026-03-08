@@ -5,6 +5,7 @@ import { toPng } from "html-to-image";
 import { Download, Link2, X as XIcon, Linkedin, ChevronDown, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const PILLAR_COLORS = [
   "hsl(4, 60%, 92%)",
@@ -112,9 +113,10 @@ export default function HaradaGridView({ data, onReset }: HaradaGridViewProps) {
   const handleDownload = async () => {
     if (!gridRef.current) return;
     try {
+      const isDark = document.documentElement.classList.contains("dark");
       const dataUrl = await toPng(gridRef.current, { 
         pixelRatio: 2,
-        backgroundColor: "#f5f0e8",
+        backgroundColor: isDark ? "#191d24" : "#f5f0e8",
       });
       const link = document.createElement("a");
       link.download = `haradaily-${data.goal.slice(0, 30).replace(/\s+/g, "-")}.png`;
@@ -154,6 +156,7 @@ export default function HaradaGridView({ data, onReset }: HaradaGridViewProps) {
             <span className="text-sm font-sans font-normal text-muted-foreground ml-2">HaraDaily</span>
           </button>
           <div className="flex gap-2 items-center">
+            <ThemeToggle />
             {/* Progress badge */}
             <div className="hidden sm:flex items-center gap-2 mr-2 text-sm text-muted-foreground">
               <span className="font-semibold text-foreground">{completedCount}/{totalTasks}</span>

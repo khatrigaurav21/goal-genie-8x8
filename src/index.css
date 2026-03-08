@@ -64,6 +64,61 @@
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
+
+  .dark {
+    /* Dark wabi-sabi — charcoal & warm shadows */
+    --background: 220 15% 10%;
+    --foreground: 40 20% 88%;
+
+    --card: 220 12% 14%;
+    --card-foreground: 40 20% 88%;
+
+    --popover: 220 15% 10%;
+    --popover-foreground: 40 20% 88%;
+
+    --primary: 4 75% 55%;
+    --primary-foreground: 40 30% 96%;
+
+    --secondary: 220 10% 18%;
+    --secondary-foreground: 40 20% 88%;
+
+    --muted: 220 10% 20%;
+    --muted-foreground: 40 10% 55%;
+
+    --accent: 220 10% 22%;
+    --accent-foreground: 40 20% 88%;
+
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 40 30% 96%;
+
+    --border: 220 10% 22%;
+    --input: 220 10% 20%;
+    --ring: 4 75% 55%;
+
+    --ink: 40 20% 88%;
+    --paper: 220 15% 10%;
+    --paper-dark: 220 12% 14%;
+    --vermillion: 4 75% 55%;
+    --vermillion-light: 4 40% 20%;
+    --gold: 42 60% 45%;
+    --indigo: 230 30% 60%;
+    --indigo-light: 230 15% 20%;
+    --sage: 150 12% 50%;
+    --sage-light: 150 10% 18%;
+
+    --cell-center: 4 75% 55%;
+    --cell-pillar: 220 10% 18%;
+    --cell-task: 220 12% 14%;
+
+    --sidebar-background: 220 15% 10%;
+    --sidebar-foreground: 40 20% 88%;
+    --sidebar-primary: 40 20% 88%;
+    --sidebar-primary-foreground: 220 15% 10%;
+    --sidebar-accent: 220 10% 18%;
+    --sidebar-accent-foreground: 40 20% 88%;
+    --sidebar-border: 220 10% 22%;
+    --sidebar-ring: 4 75% 55%;
+  }
 }
 
 @layer base {
@@ -81,6 +136,10 @@
 /* Subtle paper texture overlay */
 .paper-texture {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='%23f5f0e8'/%3E%3Crect width='1' height='1' fill='%23ede8df' opacity='0.3'/%3E%3C/svg%3E");
+}
+
+.dark .paper-texture {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='%23191d24'/%3E%3Crect width='1' height='1' fill='%23222830' opacity='0.3'/%3E%3C/svg%3E");
 }
 
 /* Grid styles */
