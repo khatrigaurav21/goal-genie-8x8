@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const PILLAR_COLORS_MUTED = [
   "hsl(4, 40%, 90%)",
