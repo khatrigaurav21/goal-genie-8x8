@@ -27,6 +27,8 @@ Given a user's ambitious goal, generate a complete Harada Method grid with:
 
 Tasks should be concrete, measurable, and actionable. Each task should be a short phrase (3-8 words).
 
+CRITICAL: You MUST respond ENTIRELY in English. All pillar names and all tasks must be in English, regardless of the origin of the method. Do NOT use Japanese or any other language.
+
 You MUST respond using the provided tool.`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
