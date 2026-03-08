@@ -271,15 +271,36 @@ export default function HaradaGridView({ data, onReset }: HaradaGridViewProps) {
                       : undefined,
                   }}
                 >
-                  {/* Pillar complete badge */}
+                  {/* Pillar confetti burst + celebration emoji */}
+                  {cell.type === "pillar" && isPillarCelebrating && (
+                    <>
+                      {["🎉", "✨", "⭐", "🎊", "💫", "🌟"].map((emoji, ei) => (
+                        <motion.span
+                          key={ei}
+                          initial={{ opacity: 1, scale: 0.5, x: 0, y: 0 }}
+                          animate={{
+                            opacity: [1, 1, 0],
+                            scale: [0.5, 1.2, 0.8],
+                            x: Math.cos((ei / 6) * Math.PI * 2) * 35,
+                            y: Math.sin((ei / 6) * Math.PI * 2) * 35 - 10,
+                          }}
+                          transition={{ duration: 0.8, ease: "easeOut" }}
+                          className="absolute z-20 text-sm pointer-events-none"
+                          style={{ top: "50%", left: "50%" }}
+                        >
+                          {emoji}
+                        </motion.span>
+                      ))}
+                    </>
+                  )}
                   {cell.type === "pillar" && isPillarComplete && (
                     <motion.div
                       initial={{ scale: 0, rotate: -180 }}
                       animate={{ scale: 1, rotate: 0 }}
-                      transition={{ type: "spring", stiffness: 300, damping: 15 }}
-                      className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-primary flex items-center justify-center z-10 shadow-sm"
+                      transition={{ type: "spring", stiffness: 300, damping: 15, delay: isPillarCelebrating ? 0.6 : 0 }}
+                      className="absolute -top-1.5 -right-1.5 z-10 text-base select-none"
                     >
-                      <Check className="w-3 h-3 text-primary-foreground" strokeWidth={3} />
+                      🎉
                     </motion.div>
                   )}
                   {/* Celebration shimmer */}
