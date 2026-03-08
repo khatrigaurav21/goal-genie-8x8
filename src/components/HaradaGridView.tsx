@@ -19,6 +19,7 @@ export default function HaradaGridView({ data, onReset }: HaradaGridViewProps) {
   const [completedTasks, setCompletedTasks] = useState<Set<string>>(new Set());
   const [celebratingPillar, setCelebratingPillar] = useState<number | null>(null);
   const [allComplete, setAllComplete] = useState(false);
+  const { isDark, pillarColors, pillarDoneColors, pillarBorderColors, emptyBg, textColor } = usePillarColors();
   const cells = buildGridCells(data);
 
   const totalTasks = 64;
@@ -198,9 +199,9 @@ export default function HaradaGridView({ data, onReset }: HaradaGridViewProps) {
             className="harada-grid rounded-lg overflow-hidden border border-border shadow-lg bg-background p-1"
           >
             {cells.flat().map((cell, i) => {
-              const pillarBg = cell.pillarIndex !== undefined ? PILLAR_COLORS[cell.pillarIndex] : undefined;
-              const pillarDoneBg = cell.pillarIndex !== undefined ? PILLAR_DONE_COLORS[cell.pillarIndex] : undefined;
-              const pillarBorder = cell.pillarIndex !== undefined ? PILLAR_BORDER_COLORS[cell.pillarIndex] : undefined;
+              const pillarBg = cell.pillarIndex !== undefined ? pillarColors[cell.pillarIndex] : undefined;
+              const pillarDoneBg = cell.pillarIndex !== undefined ? pillarDoneColors[cell.pillarIndex] : undefined;
+              const pillarBorder = cell.pillarIndex !== undefined ? pillarBorderColors[cell.pillarIndex] : undefined;
               const isTask = cell.type === "task" && cell.text;
               const taskKey = cell.pillarIndex !== undefined ? `${cell.pillarIndex}-${cell.text}` : "";
               const isDone = isTask && completedTasks.has(taskKey);
@@ -241,9 +242,9 @@ export default function HaradaGridView({ data, onReset }: HaradaGridViewProps) {
                         ? pillarDoneBg
                         : cell.type === "task"
                         ? `${pillarBg}80`
-                        : "hsl(40, 25%, 93%)",
+                        : emptyBg,
                     borderLeft: cell.type === "pillar" ? `3px solid ${pillarBorder}` : undefined,
-                    color: cell.type === "center" ? undefined : "hsl(220, 20%, 12%)",
+                    color: cell.type === "center" ? undefined : textColor,
                     boxShadow: isPillarCelebrating
                       ? `0 0 16px 4px ${pillarBorder}60`
                       : isPillarComplete && cell.type === "pillar"
@@ -346,7 +347,7 @@ export default function HaradaGridView({ data, onReset }: HaradaGridViewProps) {
               >
                 <div
                   className="w-3 h-3 rounded-sm relative"
-                  style={{ backgroundColor: PILLAR_COLORS[i] }}
+                  style={{ backgroundColor: pillarColors[i] }}
                 >
                   {isComplete && (
                     <Check className="w-3 h-3 text-primary absolute inset-0" strokeWidth={3} />
