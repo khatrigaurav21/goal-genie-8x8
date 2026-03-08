@@ -1,17 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import ThemeToggle from "@/components/ThemeToggle";
-
-const PILLAR_COLORS_MUTED = [
-  "hsl(4, 40%, 90%)",
-  "hsl(230, 20%, 90%)",
-  "hsl(150, 10%, 90%)",
-  "hsl(42, 35%, 90%)",
-  "hsl(320, 20%, 90%)",
-  "hsl(190, 20%, 90%)",
-  "hsl(270, 15%, 90%)",
-  "hsl(20, 25%, 90%)",
-];
+import { usePillarColors } from "@/lib/theme-colors";
 
 const TIPS = [
   "Breaking your goal into 8 pillars…",
@@ -34,6 +24,7 @@ function RotatingTips({ tips }: { tips: string[] }) {
 }
 
 export default function LoadingSkeleton({ goal }: { goal: string }) {
+  const { pillarColors, emptyBg } = usePillarColors();
   const cells = Array.from({ length: 81 }, (_, i) => {
     const row = Math.floor(i / 9);
     const col = i % 9;
@@ -96,10 +87,10 @@ export default function LoadingSkeleton({ goal }: { goal: string }) {
                   backgroundColor: cell.isCenter
                     ? "hsl(var(--primary))"
                     : cell.isPillarCenter && cell.pillarIdx !== undefined
-                    ? PILLAR_COLORS_MUTED[cell.pillarIdx]
+                    ? pillarColors[cell.pillarIdx]
                     : cell.pillarIdx !== undefined
-                    ? `${PILLAR_COLORS_MUTED[cell.pillarIdx]}80`
-                    : "hsl(40, 15%, 93%)",
+                    ? `${pillarColors[cell.pillarIdx]}80`
+                    : emptyBg,
                 }}
                 animate={{ opacity: [0.4, 0.8, 0.4] }}
                 transition={{
