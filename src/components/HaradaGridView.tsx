@@ -234,7 +234,7 @@ export default function HaradaGridView({ data, onReset }: HaradaGridViewProps) {
               const taskKey = cell.pillarIndex !== undefined ? `${cell.pillarIndex}-${cell.text}` : "";
               const isDone = isTask && completedTasks.has(taskKey);
               const isPillarCelebrating = cell.pillarIndex !== undefined && celebratingPillar === cell.pillarIndex;
-              const isPillarComplete = cell.pillarIndex !== undefined && completedPillars.has(cell.pillarIndex);
+              const isPillarComplete = cell.pillarIndex !== undefined && completedPillarSet.has(cell.pillarIndex);
 
               return (
                 <motion.div
@@ -365,7 +365,7 @@ export default function HaradaGridView({ data, onReset }: HaradaGridViewProps) {
         {/* Legend with per-pillar progress */}
         <div className="mt-6 flex flex-wrap gap-4 justify-center">
           {data.pillars.map((p, i) => {
-            const isComplete = completedPillars.has(i);
+            const isComplete = completedPillarSet.has(i);
             return (
               <motion.div
                 key={i}
