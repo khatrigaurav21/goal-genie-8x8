@@ -48,7 +48,9 @@ export default function HaradaGridView({ data, onReset }: HaradaGridViewProps) {
   const gridRef = useRef<HTMLDivElement>(null);
   const [shareOpen, setShareOpen] = useState(false);
   const [completedTasks, setCompletedTasks] = useState<Set<string>>(new Set());
-  const [completedPillars, setCompletedPillars] = useState<Set<number>>(new Set());
+  const [celebratingPillar, setCelebratingPillar] = useState<number | null>(null);
+  const [allComplete, setAllComplete] = useState(false);
+  const cells = buildGridCells(data);
   const [celebratingPillar, setCelebratingPillar] = useState<number | null>(null);
   const [allComplete, setAllComplete] = useState(false);
   const cells = buildGridCells(data);
