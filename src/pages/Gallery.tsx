@@ -4,7 +4,8 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, Target, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { galleryItems, type GalleryCategory } from "@/lib/gallery-data";
-import { buildGridCells } from "@/lib/harada";
+import { buildGridCells, type HaradaGrid } from "@/lib/harada";
+import HaradaGridView from "@/components/HaradaGridView";
 
 const CATEGORIES: GalleryCategory[] = ["Sports", "Business", "Education", "Creative", "Health"];
 
