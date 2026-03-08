@@ -48,6 +48,9 @@ export default function HaradaGridView({ data, onReset }: HaradaGridViewProps) {
   const gridRef = useRef<HTMLDivElement>(null);
   const [shareOpen, setShareOpen] = useState(false);
   const [completedTasks, setCompletedTasks] = useState<Set<string>>(new Set());
+  const [completedPillars, setCompletedPillars] = useState<Set<number>>(new Set());
+  const [celebratingPillar, setCelebratingPillar] = useState<number | null>(null);
+  const [allComplete, setAllComplete] = useState(false);
   const cells = buildGridCells(data);
 
   const totalTasks = 64;
@@ -71,16 +74,23 @@ export default function HaradaGridView({ data, onReset }: HaradaGridViewProps) {
       const next = new Set(prev);
       if (next.has(key)) {
         next.delete(key);
+        // Un-complete pillar if unchecking
+        if (completedPillars.has(pillarIndex)) {
+          setCompletedPillars((p) => { const n = new Set(p); n.delete(pillarIndex); return n; });
+        }
+        setAllComplete(false);
       } else {
         next.add(key);
-        // Check if all 8 tasks for this pillar are done
         const pillarDone = data.pillars[pillarIndex].tasks.every((t) => next.has(`${pillarIndex}-${t}`));
-        if (pillarDone) {
+        if (pillarDone && !completedPillars.has(pillarIndex)) {
           toast.success(`🎉 "${data.pillars[pillarIndex].name}" pillar complete!`);
+          setCompletedPillars((p) => new Set(p).add(pillarIndex));
+          setCelebratingPillar(pillarIndex);
+          setTimeout(() => setCelebratingPillar(null), 1200);
         }
-        // Check if all 64 done
         if (next.size === totalTasks) {
           toast.success("🏆 All 64 tasks complete! You've mastered your goal!", { duration: 5000 });
+          setAllComplete(true);
         }
       }
       return next;
@@ -214,13 +224,23 @@ export default function HaradaGridView({ data, onReset }: HaradaGridViewProps) {
               const isTask = cell.type === "task" && cell.text;
               const taskKey = cell.pillarIndex !== undefined ? `${cell.pillarIndex}-${cell.text}` : "";
               const isDone = isTask && completedTasks.has(taskKey);
+              const isPillarCelebrating = cell.pillarIndex !== undefined && celebratingPillar === cell.pillarIndex;
+              const isPillarComplete = cell.pillarIndex !== undefined && completedPillars.has(cell.pillarIndex);
 
               return (
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: i * 0.008, duration: 0.3 }}
+                  animate={{
+                    opacity: 1,
+                    scale: isPillarCelebrating ? [1, 1.08, 0.96, 1.03, 1] : 1,
+                    rotate: isPillarCelebrating ? [0, -2, 2, -1, 0] : 0,
+                  }}
+                  transition={
+                    isPillarCelebrating
+                      ? { duration: 0.6, ease: "easeInOut" }
+                      : { delay: i * 0.008, duration: 0.3 }
+                  }
                   onClick={isTask ? () => toggleTask(i, cell.pillarIndex!, cell.text) : undefined}
                   className={`harada-cell rounded-sm relative ${
                     cell.type === "center"
@@ -233,6 +253,8 @@ export default function HaradaGridView({ data, onReset }: HaradaGridViewProps) {
                     backgroundColor:
                       cell.type === "center"
                         ? undefined
+                        : cell.type === "pillar" && isPillarComplete
+                        ? pillarDoneBg
                         : cell.type === "pillar"
                         ? pillarBg
                         : isDone
@@ -242,8 +264,36 @@ export default function HaradaGridView({ data, onReset }: HaradaGridViewProps) {
                         : "hsl(40, 25%, 93%)",
                     borderLeft: cell.type === "pillar" ? `3px solid ${pillarBorder}` : undefined,
                     color: cell.type === "center" ? undefined : "hsl(220, 20%, 12%)",
+                    boxShadow: isPillarCelebrating
+                      ? `0 0 16px 4px ${pillarBorder}60`
+                      : isPillarComplete && cell.type === "pillar"
+                      ? `inset 0 0 12px ${pillarBorder}30`
+                      : undefined,
                   }}
                 >
+                  {/* Pillar complete badge */}
+                  {cell.type === "pillar" && isPillarComplete && (
+                    <motion.div
+                      initial={{ scale: 0, rotate: -180 }}
+                      animate={{ scale: 1, rotate: 0 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                      className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-primary flex items-center justify-center z-10 shadow-sm"
+                    >
+                      <Check className="w-3 h-3 text-primary-foreground" strokeWidth={3} />
+                    </motion.div>
+                  )}
+                  {/* Celebration shimmer */}
+                  {isPillarCelebrating && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: [0, 0.5, 0] }}
+                      transition={{ duration: 0.8 }}
+                      className="absolute inset-0 rounded-sm"
+                      style={{
+                        background: `linear-gradient(135deg, transparent 30%, ${pillarBorder}40 50%, transparent 70%)`,
+                      }}
+                    />
+                  )}
                   {isDone && (
                     <motion.div
                       initial={{ scale: 0 }}
@@ -260,20 +310,54 @@ export default function HaradaGridView({ data, onReset }: HaradaGridViewProps) {
           </div>
         </motion.div>
 
+        {/* All-complete celebration overlay */}
+        <AnimatePresence>
+          {allComplete && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="mt-6 text-center p-4 rounded-lg border border-primary/30 bg-primary/5"
+            >
+              <motion.div
+                animate={{ scale: [1, 1.1, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="text-3xl mb-2"
+              >
+                🏆
+              </motion.div>
+              <p className="font-serif font-bold text-foreground">Goal Mastered!</p>
+              <p className="text-sm text-muted-foreground">All 64 tasks complete. Incredible discipline.</p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Legend with per-pillar progress */}
         <div className="mt-6 flex flex-wrap gap-4 justify-center">
-          {data.pillars.map((p, i) => (
-            <div key={i} className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <div
-                className="w-3 h-3 rounded-sm"
-                style={{ backgroundColor: PILLAR_COLORS[i] }}
-              />
-              <span>{p.name}</span>
-              <span className="text-[10px] font-medium ml-0.5">
-                ({pillarProgress[i]}/8)
-              </span>
-            </div>
-          ))}
+          {data.pillars.map((p, i) => {
+            const isComplete = completedPillars.has(i);
+            return (
+              <motion.div
+                key={i}
+                className={`flex items-center gap-1.5 text-xs ${isComplete ? "text-foreground font-medium" : "text-muted-foreground"}`}
+                animate={isComplete ? { scale: [1, 1.1, 1] } : {}}
+                transition={{ duration: 0.4 }}
+              >
+                <div
+                  className="w-3 h-3 rounded-sm relative"
+                  style={{ backgroundColor: PILLAR_COLORS[i] }}
+                >
+                  {isComplete && (
+                    <Check className="w-3 h-3 text-primary absolute inset-0" strokeWidth={3} />
+                  )}
+                </div>
+                <span className={isComplete ? "line-through" : ""}>{p.name}</span>
+                <span className="text-[10px] font-medium ml-0.5">
+                  ({pillarProgress[i]}/8)
+                </span>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </div>
