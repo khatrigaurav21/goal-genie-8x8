@@ -1,6 +1,7 @@
 import { useState } from "react";
 import GoalInput from "@/components/GoalInput";
 import HaradaGridView from "@/components/HaradaGridView";
+import LoadingSkeleton from "@/components/LoadingSkeleton";
 import type { HaradaGrid } from "@/lib/harada";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,9 +9,11 @@ import { supabase } from "@/integrations/supabase/client";
 const Index = () => {
   const [gridData, setGridData] = useState<HaradaGrid | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingGoal, setLoadingGoal] = useState("");
 
   const handleGenerate = async (goal: string) => {
     setIsLoading(true);
+    setLoadingGoal(goal);
     try {
       const { data, error } = await supabase.functions.invoke("generate-harada", {
         body: { goal },
@@ -30,6 +33,10 @@ const Index = () => {
 
   if (gridData) {
     return <HaradaGridView data={gridData} onReset={() => setGridData(null)} />;
+  }
+
+  if (isLoading) {
+    return <LoadingSkeleton goal={loadingGoal} />;
   }
 
   return <GoalInput onGenerate={handleGenerate} isLoading={isLoading} />;
