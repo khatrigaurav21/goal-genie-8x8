@@ -1,8 +1,8 @@
-import { useRef } from "react";
-import { motion } from "framer-motion";
+import { useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { buildGridCells, type HaradaGrid } from "@/lib/harada";
 import { toPng } from "html-to-image";
-import { Download, Share2 } from "lucide-react";
+import { Download, Link2, X as XIcon, Linkedin, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
@@ -35,7 +35,11 @@ interface HaradaGridViewProps {
 
 export default function HaradaGridView({ data, onReset }: HaradaGridViewProps) {
   const gridRef = useRef<HTMLDivElement>(null);
+  const [shareOpen, setShareOpen] = useState(false);
   const cells = buildGridCells(data);
+
+  const shareText = `🎯 My Harada Method goal: "${data.goal}" — broken down into 8 pillars and 64 actionable tasks!`;
+  const shareUrl = window.location.href;
 
   const handleDownload = async () => {
     if (!gridRef.current) return;
@@ -54,16 +58,22 @@ export default function HaradaGridView({ data, onReset }: HaradaGridViewProps) {
     }
   };
 
-  const handleShare = async () => {
-    const text = `🎯 My Harada Method goal: "${data.goal}" — broken down into 8 pillars and 64 actionable tasks!`;
-    if (navigator.share) {
-      try {
-        await navigator.share({ title: "HaraDaily Goal Grid", text });
-      } catch {}
-    } else {
-      await navigator.clipboard.writeText(text);
-      toast.success("Copied to clipboard!");
-    }
+  const handleShareX = () => {
+    const url = `https://x.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+    window.open(url, "_blank", "noopener,noreferrer");
+    setShareOpen(false);
+  };
+
+  const handleShareLinkedIn = () => {
+    const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
+    window.open(url, "_blank", "noopener,noreferrer");
+    setShareOpen(false);
+  };
+
+  const handleCopyLink = async () => {
+    await navigator.clipboard.writeText(`${shareText}\n\n${shareUrl}`);
+    toast.success("Link copied to clipboard!");
+    setShareOpen(false);
   };
 
   return (
@@ -79,9 +89,31 @@ export default function HaradaGridView({ data, onReset }: HaradaGridViewProps) {
             <Button variant="outline" size="sm" onClick={handleDownload}>
               <Download className="w-4 h-4 mr-1" /> Save PNG
             </Button>
-            <Button variant="outline" size="sm" onClick={handleShare}>
-              <Share2 className="w-4 h-4 mr-1" /> Share
-            </Button>
+            <div className="relative">
+              <Button variant="outline" size="sm" onClick={() => setShareOpen(!shareOpen)}>
+                <ChevronDown className="w-4 h-4 mr-1" /> Share
+              </Button>
+              <AnimatePresence>
+                {shareOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    className="absolute right-0 top-full mt-1 w-48 bg-card border border-border rounded-lg shadow-lg overflow-hidden z-20"
+                  >
+                    <button onClick={handleShareX} className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-foreground hover:bg-secondary transition-colors">
+                      <XIcon className="w-4 h-4" /> Share on X
+                    </button>
+                    <button onClick={handleShareLinkedIn} className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-foreground hover:bg-secondary transition-colors">
+                      <Linkedin className="w-4 h-4" /> Share on LinkedIn
+                    </button>
+                    <button onClick={handleCopyLink} className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-foreground hover:bg-secondary transition-colors border-t border-border">
+                      <Link2 className="w-4 h-4" /> Copy Link
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
             <Button size="sm" onClick={onReset} className="bg-primary text-primary-foreground hover:bg-primary/90">
               New Goal
             </Button>
