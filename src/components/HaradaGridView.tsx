@@ -48,6 +48,9 @@ export default function HaradaGridView({ data, onReset }: HaradaGridViewProps) {
   const gridRef = useRef<HTMLDivElement>(null);
   const [shareOpen, setShareOpen] = useState(false);
   const [completedTasks, setCompletedTasks] = useState<Set<string>>(new Set());
+  const [completedPillars, setCompletedPillars] = useState<Set<number>>(new Set());
+  const [celebratingPillar, setCelebratingPillar] = useState<number | null>(null);
+  const [allComplete, setAllComplete] = useState(false);
   const cells = buildGridCells(data);
 
   const totalTasks = 64;
@@ -71,16 +74,23 @@ export default function HaradaGridView({ data, onReset }: HaradaGridViewProps) {
       const next = new Set(prev);
       if (next.has(key)) {
         next.delete(key);
+        // Un-complete pillar if unchecking
+        if (completedPillars.has(pillarIndex)) {
+          setCompletedPillars((p) => { const n = new Set(p); n.delete(pillarIndex); return n; });
+        }
+        setAllComplete(false);
       } else {
         next.add(key);
-        // Check if all 8 tasks for this pillar are done
         const pillarDone = data.pillars[pillarIndex].tasks.every((t) => next.has(`${pillarIndex}-${t}`));
-        if (pillarDone) {
+        if (pillarDone && !completedPillars.has(pillarIndex)) {
           toast.success(`🎉 "${data.pillars[pillarIndex].name}" pillar complete!`);
+          setCompletedPillars((p) => new Set(p).add(pillarIndex));
+          setCelebratingPillar(pillarIndex);
+          setTimeout(() => setCelebratingPillar(null), 1200);
         }
-        // Check if all 64 done
         if (next.size === totalTasks) {
           toast.success("🏆 All 64 tasks complete! You've mastered your goal!", { duration: 5000 });
+          setAllComplete(true);
         }
       }
       return next;
