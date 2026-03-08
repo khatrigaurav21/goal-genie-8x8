@@ -238,7 +238,7 @@ export default function HaradaGridView({ data, onReset }: HaradaGridViewProps) {
 
               return (
                 <motion.div
-                  key={i}
+                  key={`${i}-${isDone ? "done" : "todo"}-${isPillarComplete ? "pc" : "pi"}`}
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{
                     opacity: 1,
