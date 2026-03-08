@@ -48,7 +48,6 @@ export default function HaradaGridView({ data, onReset }: HaradaGridViewProps) {
   const gridRef = useRef<HTMLDivElement>(null);
   const [shareOpen, setShareOpen] = useState(false);
   const [completedTasks, setCompletedTasks] = useState<Set<string>>(new Set());
-  const [completedPillars, setCompletedPillars] = useState<Set<number>>(new Set());
   const [celebratingPillar, setCelebratingPillar] = useState<number | null>(null);
   const [allComplete, setAllComplete] = useState(false);
   const cells = buildGridCells(data);
@@ -57,37 +56,47 @@ export default function HaradaGridView({ data, onReset }: HaradaGridViewProps) {
   const completedCount = completedTasks.size;
   const progressPercent = Math.round((completedCount / totalTasks) * 100);
 
-  // Per-pillar progress
-  const pillarProgress = useMemo(() => {
-    return data.pillars.map((_, i) => {
+  // Derive completed pillars from completedTasks (single source of truth)
+  const { pillarProgress, completedPillarSet } = useMemo(() => {
+    const progress = data.pillars.map((_, i) => {
       let done = 0;
       completedTasks.forEach((key) => {
         if (key.startsWith(`${i}-`)) done++;
       });
       return done;
     });
+    const cpSet = new Set<number>();
+    data.pillars.forEach((p, i) => {
+      if (p.tasks.every((t) => completedTasks.has(`${i}-${t}`))) cpSet.add(i);
+    });
+    return { pillarProgress: progress, completedPillarSet: cpSet };
   }, [completedTasks, data.pillars]);
 
-  const toggleTask = (cellIndex: number, pillarIndex: number, taskText: string) => {
+  // Track previous pillar completion to detect new completions
+  const prevPillarSetRef = useRef<Set<number>>(new Set());
+
+  // Detect newly completed pillars for celebration
+  useMemo(() => {
+    const prev = prevPillarSetRef.current;
+    completedPillarSet.forEach((i) => {
+      if (!prev.has(i)) {
+        toast.success(`🎉 "${data.pillars[i].name}" pillar complete!`);
+        setCelebratingPillar(i);
+        setTimeout(() => setCelebratingPillar(null), 1200);
+      }
+    });
+    prevPillarSetRef.current = new Set(completedPillarSet);
+  }, [completedPillarSet, data.pillars]);
+
+  const toggleTask = (_cellIndex: number, pillarIndex: number, taskText: string) => {
     const key = `${pillarIndex}-${taskText}`;
     setCompletedTasks((prev) => {
       const next = new Set(prev);
       if (next.has(key)) {
         next.delete(key);
-        // Un-complete pillar if unchecking
-        if (completedPillars.has(pillarIndex)) {
-          setCompletedPillars((p) => { const n = new Set(p); n.delete(pillarIndex); return n; });
-        }
         setAllComplete(false);
       } else {
         next.add(key);
-        const pillarDone = data.pillars[pillarIndex].tasks.every((t) => next.has(`${pillarIndex}-${t}`));
-        if (pillarDone && !completedPillars.has(pillarIndex)) {
-          toast.success(`🎉 "${data.pillars[pillarIndex].name}" pillar complete!`);
-          setCompletedPillars((p) => new Set(p).add(pillarIndex));
-          setCelebratingPillar(pillarIndex);
-          setTimeout(() => setCelebratingPillar(null), 1200);
-        }
         if (next.size === totalTasks) {
           toast.success("🏆 All 64 tasks complete! You've mastered your goal!", { duration: 5000 });
           setAllComplete(true);
@@ -225,7 +234,7 @@ export default function HaradaGridView({ data, onReset }: HaradaGridViewProps) {
               const taskKey = cell.pillarIndex !== undefined ? `${cell.pillarIndex}-${cell.text}` : "";
               const isDone = isTask && completedTasks.has(taskKey);
               const isPillarCelebrating = cell.pillarIndex !== undefined && celebratingPillar === cell.pillarIndex;
-              const isPillarComplete = cell.pillarIndex !== undefined && completedPillars.has(cell.pillarIndex);
+              const isPillarComplete = cell.pillarIndex !== undefined && completedPillarSet.has(cell.pillarIndex);
 
               return (
                 <motion.div
@@ -356,7 +365,7 @@ export default function HaradaGridView({ data, onReset }: HaradaGridViewProps) {
         {/* Legend with per-pillar progress */}
         <div className="mt-6 flex flex-wrap gap-4 justify-center">
           {data.pillars.map((p, i) => {
-            const isComplete = completedPillars.has(i);
+            const isComplete = completedPillarSet.has(i);
             return (
               <motion.div
                 key={i}
