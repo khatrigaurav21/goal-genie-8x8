@@ -7,6 +7,7 @@ import ThemeToggle from "@/components/ThemeToggle";
 import { galleryItems, type GalleryCategory } from "@/lib/gallery-data";
 import { buildGridCells, type HaradaGrid } from "@/lib/harada";
 import HaradaGridView from "@/components/HaradaGridView";
+import { usePillarColors } from "@/lib/theme-colors";
 
 const CATEGORIES: GalleryCategory[] = ["Sports", "Business", "Education", "Creative", "Health"];
 
@@ -18,18 +19,8 @@ const CATEGORY_EMOJI: Record<GalleryCategory, string> = {
   Health: "💪",
 };
 
-const PILLAR_COLORS = [
-  "hsl(4, 60%, 92%)",
-  "hsl(230, 30%, 92%)",
-  "hsl(150, 15%, 92%)",
-  "hsl(42, 50%, 92%)",
-  "hsl(320, 30%, 92%)",
-  "hsl(190, 30%, 92%)",
-  "hsl(270, 25%, 92%)",
-  "hsl(20, 40%, 92%)",
-];
-
 function MiniGrid({ data }: { data: typeof galleryItems[0]["data"] }) {
+  const { pillarColors, emptyBg } = usePillarColors();
   const cells = buildGridCells(data);
   return (
     <div className="grid grid-cols-9 grid-rows-9 gap-[1px] w-full aspect-square rounded overflow-hidden">
@@ -42,10 +33,10 @@ function MiniGrid({ data }: { data: typeof galleryItems[0]["data"] }) {
               cell.type === "center"
                 ? undefined
                 : cell.type === "pillar"
-                ? PILLAR_COLORS[cell.pillarIndex ?? 0]
+                ? pillarColors[cell.pillarIndex ?? 0]
                 : cell.pillarIndex !== undefined
-                ? `${PILLAR_COLORS[cell.pillarIndex]}80`
-                : "hsl(40, 25%, 93%)",
+                ? `${pillarColors[cell.pillarIndex]}80`
+                : emptyBg,
           }}
         />
       ))}
