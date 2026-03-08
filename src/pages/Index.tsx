@@ -11,12 +11,12 @@ const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [loadingGoal, setLoadingGoal] = useState("");
 
-  const handleGenerate = async (goal: string) => {
+  const handleGenerate = async (goal: string, language: string = "en") => {
     setIsLoading(true);
     setLoadingGoal(goal);
     try {
       const { data, error } = await supabase.functions.invoke("generate-harada", {
-        body: { goal },
+        body: { goal, language },
       });
 
       if (error) throw error;
