@@ -57,15 +57,20 @@ export default function HaradaGridView({ data, onReset }: HaradaGridViewProps) {
   const completedCount = completedTasks.size;
   const progressPercent = Math.round((completedCount / totalTasks) * 100);
 
-  // Per-pillar progress
-  const pillarProgress = useMemo(() => {
-    return data.pillars.map((_, i) => {
+  // Derive completed pillars from completedTasks (single source of truth)
+  const { pillarProgress, completedPillarSet } = useMemo(() => {
+    const progress = data.pillars.map((_, i) => {
       let done = 0;
       completedTasks.forEach((key) => {
         if (key.startsWith(`${i}-`)) done++;
       });
       return done;
     });
+    const cpSet = new Set<number>();
+    data.pillars.forEach((p, i) => {
+      if (p.tasks.every((t) => completedTasks.has(`${i}-${t}`))) cpSet.add(i);
+    });
+    return { pillarProgress: progress, completedPillarSet: cpSet };
   }, [completedTasks, data.pillars]);
 
   const toggleTask = (cellIndex: number, pillarIndex: number, taskText: string) => {
