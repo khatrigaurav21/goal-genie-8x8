@@ -27,10 +27,11 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
-    const systemPrompt = `You are an expert in the Harada Method (also known as the Mandala Chart or Open Window 64).
+const systemPrompt = `You are an expert in the Harada Method (also known as the Mandala Chart or Open Window 64).
 Given a user's ambitious goal, generate a complete Harada Method grid with:
 - 8 supporting pillars (key areas/categories that support the main goal)
 - 8 specific, actionable tasks for each pillar (64 tasks total)
+- Identify the 10 highest-impact tasks across all pillars that would have the greatest effect on achieving the goal
 
 Tasks should be concrete, measurable, and actionable. Each task should be a short phrase (3-8 words).
 
@@ -79,8 +80,23 @@ You MUST respond using the provided tool.`;
                     minItems: 8,
                     maxItems: 8,
                   },
+                  high_impact: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        pillar_index: { type: "number", description: "Index of the pillar (0-7)" },
+                        task_index: { type: "number", description: "Index of the task within the pillar (0-7)" },
+                      },
+                      required: ["pillar_index", "task_index"],
+                      additionalProperties: false,
+                    },
+                    minItems: 10,
+                    maxItems: 10,
+                    description: "The 10 highest-impact tasks identified by pillar and task index",
+                  },
                 },
-                required: ["pillars"],
+                required: ["pillars", "high_impact"],
                 additionalProperties: false,
               },
             },
@@ -123,7 +139,14 @@ You MUST respond using the provided tool.`;
 
     const args = JSON.parse(toolCall.function.arguments);
 
-    return new Response(JSON.stringify({ goal: goal.trim(), pillars: args.pillars }), {
+    // Convert high_impact indices to task keys
+    const highImpact: string[] = (args.high_impact || []).map((hi: { pillar_index: number; task_index: number }) => {
+      const pillar = args.pillars[hi.pillar_index];
+      if (!pillar || !pillar.tasks[hi.task_index]) return null;
+      return `${hi.pillar_index}-${pillar.tasks[hi.task_index]}`;
+    }).filter(Boolean);
+
+    return new Response(JSON.stringify({ goal: goal.trim(), pillars: args.pillars, highImpact }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {

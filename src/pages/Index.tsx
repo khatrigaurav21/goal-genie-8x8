@@ -10,10 +10,12 @@ const Index = () => {
   const [gridData, setGridData] = useState<HaradaGrid | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [loadingGoal, setLoadingGoal] = useState("");
+  const [currentLanguage, setCurrentLanguage] = useState("en");
 
   const handleGenerate = async (goal: string, language: string = "en") => {
     setIsLoading(true);
     setLoadingGoal(goal);
+    setCurrentLanguage(language);
     try {
       const { data, error } = await supabase.functions.invoke("generate-harada", {
         body: { goal, language },
@@ -32,7 +34,7 @@ const Index = () => {
   };
 
   if (gridData) {
-    return <HaradaGridView data={gridData} onReset={() => setGridData(null)} />;
+    return <HaradaGridView data={gridData} onReset={() => setGridData(null)} language={currentLanguage} />;
   }
 
   if (isLoading) {

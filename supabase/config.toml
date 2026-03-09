@@ -2,3 +2,9 @@ project_id = "zgtlxnjtuzejodqpglfd"
 
 [functions.generate-harada]
 verify_jwt = false
+
+[functions.ai-expand-task]
+verify_jwt = false
+
+[functions.weekly-reflection]
+verify_jwt = false
