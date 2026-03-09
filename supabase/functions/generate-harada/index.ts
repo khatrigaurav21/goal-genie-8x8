@@ -139,7 +139,14 @@ You MUST respond using the provided tool.`;
 
     const args = JSON.parse(toolCall.function.arguments);
 
-    return new Response(JSON.stringify({ goal: goal.trim(), pillars: args.pillars }), {
+    // Convert high_impact indices to task keys
+    const highImpact: string[] = (args.high_impact || []).map((hi: { pillar_index: number; task_index: number }) => {
+      const pillar = args.pillars[hi.pillar_index];
+      if (!pillar || !pillar.tasks[hi.task_index]) return null;
+      return `${hi.pillar_index}-${pillar.tasks[hi.task_index]}`;
+    }).filter(Boolean);
+
+    return new Response(JSON.stringify({ goal: goal.trim(), pillars: args.pillars, highImpact }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {
