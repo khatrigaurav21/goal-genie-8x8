@@ -1,6 +1,7 @@
 export interface HaradaGrid {
   goal: string;
   pillars: Pillar[];
+  highImpact?: string[]; // task keys like "0-Task text"
 }
 
 export interface Pillar {

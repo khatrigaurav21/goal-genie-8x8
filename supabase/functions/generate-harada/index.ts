@@ -27,10 +27,11 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
-    const systemPrompt = `You are an expert in the Harada Method (also known as the Mandala Chart or Open Window 64).
+const systemPrompt = `You are an expert in the Harada Method (also known as the Mandala Chart or Open Window 64).
 Given a user's ambitious goal, generate a complete Harada Method grid with:
 - 8 supporting pillars (key areas/categories that support the main goal)
 - 8 specific, actionable tasks for each pillar (64 tasks total)
+- Identify the 10 highest-impact tasks across all pillars that would have the greatest effect on achieving the goal
 
 Tasks should be concrete, measurable, and actionable. Each task should be a short phrase (3-8 words).
 
