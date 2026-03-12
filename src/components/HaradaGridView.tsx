@@ -183,7 +183,7 @@ export default function HaradaGridView({
             原<span className="text-primary">日</span>
             <span className="text-sm font-sans font-normal text-muted-foreground ml-2">HaraDaily</span>
           </button>
-          <div className="flex gap-2 items-center">
+          <div className="flex gap-2 items-center flex-wrap">
             <ThemeToggle />
             <div className="hidden sm:flex items-center gap-2 mr-2 text-sm text-muted-foreground">
               <span className="font-semibold text-foreground">{completedCount}/{totalTasks}</span>
@@ -200,12 +200,64 @@ export default function HaradaGridView({
             <Button variant="outline" size="sm" onClick={() => setShowReflection(true)}>
               <Calendar className="w-4 h-4 mr-1" /> Reflect
             </Button>
+            {/* Alternative Plan */}
+            <div className="relative">
+              <Button variant="outline" size="sm" onClick={() => setAltPlanOpen(!altPlanOpen)} disabled={isGenerating}>
+                <RefreshCw className={`w-4 h-4 mr-1 ${isGenerating ? "animate-spin" : ""}`} />
+                {isGenerating ? "Generating..." : "Alt Plan"}
+              </Button>
+              <AnimatePresence>
+                {altPlanOpen && !isGenerating && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    className="absolute right-0 top-full mt-1 w-64 bg-card border border-border rounded-lg shadow-lg overflow-hidden z-20"
+                  >
+                    {strategies.map((s) => (
+                      <button
+                        key={s.key}
+                        onClick={() => { setAltPlanOpen(false); onGenerateAlternative?.(s.key); }}
+                        className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-foreground hover:bg-secondary transition-colors"
+                      >
+                        <s.icon className="w-4 h-4 text-primary" />
+                        <div className="text-left">
+                          <div className="font-medium">{s.label}</div>
+                          <div className="text-xs text-muted-foreground">{s.desc}</div>
+                        </div>
+                      </button>
+                    ))}
+                    {plans.length > 1 && (
+                      <>
+                        <div className="border-t border-border px-3 py-1.5 text-xs text-muted-foreground font-medium">Switch Plan</div>
+                        {plans.map((p, i) => (
+                          <button
+                            key={i}
+                            onClick={() => { setAltPlanOpen(false); onSwitchPlan?.(i); }}
+                            className={`w-full flex items-center gap-2 px-3 py-2 text-sm transition-colors ${
+                              i === activePlanIndex ? "bg-primary/10 text-primary font-medium" : "text-foreground hover:bg-secondary"
+                            }`}
+                          >
+                            <Check className={`w-3 h-3 ${i === activePlanIndex ? "opacity-100" : "opacity-0"}`} />
+                            {strategyLabels[p.strategy] || "Balanced"} Plan
+                          </button>
+                        ))}
+                      </>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
             <Button variant="outline" size="sm" onClick={handleDownload}>
               <Download className="w-4 h-4 mr-1" /> Save PNG
             </Button>
+            {/* Share Goal Plan */}
+            <Button variant="outline" size="sm" onClick={handleShareGoalPlan} disabled={isSharing}>
+              <Share2 className="w-4 h-4 mr-1" /> {isSharing ? "Sharing..." : "Share Plan"}
+            </Button>
             <div className="relative">
               <Button variant="outline" size="sm" onClick={() => setShareOpen(!shareOpen)}>
-                <ChevronDown className="w-4 h-4 mr-1" /> Share
+                <ChevronDown className="w-4 h-4 mr-1" /> Social
               </Button>
               <AnimatePresence>
                 {shareOpen && (
