@@ -41,6 +41,7 @@ export default function HaradaGridView({
   const [expandedTask, setExpandedTask] = useState<{ task: string; pillar: string } | null>(null);
   const [showReflection, setShowReflection] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
+  const [focusedPillar, setFocusedPillar] = useState<number | null>(null);
   const { isDark, pillarColors, pillarDoneColors, pillarBorderColors, emptyBg, textColor } = usePillarColors();
   const cells = buildGridCells(data);
 
