@@ -101,6 +101,30 @@ export default function HaradaGridView({
     toggleTask(0, pillarIndex, taskText);
   };
 
+  const handleShareGoalPlan = async () => {
+    setIsSharing(true);
+    try {
+      const { data: result, error } = await supabase.from("shared_plans").insert({
+        goal: data.goal,
+        pillars: data.pillars as any,
+        high_impact: (data.highImpact || []) as any,
+        completed_tasks: Array.from(completedTasks) as any,
+        language,
+        strategy: plans[activePlanIndex]?.strategy || "balanced",
+      }).select("id").single();
+
+      if (error) throw error;
+      const shareLink = `${window.location.origin}/plan/${result.id}`;
+      await navigator.clipboard.writeText(shareLink);
+      toast.success("Share link copied to clipboard!");
+    } catch (e: any) {
+      console.error("Share error:", e);
+      toast.error("Failed to create share link");
+    } finally {
+      setIsSharing(false);
+    }
+  };
+
   const shareText = `🎯 My Harada Method goal: "${data.goal}" — broken down into 8 pillars and 64 actionable tasks! ${progressPercent}% complete!`;
   const shareUrl = window.location.href;
 
@@ -138,6 +162,16 @@ export default function HaradaGridView({
     await navigator.clipboard.writeText(`${shareText}\n\n${shareUrl}`);
     toast.success("Link copied to clipboard!");
     setShareOpen(false);
+  };
+
+  const strategies = [
+    { key: "fast", label: "Fast Execution", icon: Zap, desc: "Quick wins & rapid iteration" },
+    { key: "low-budget", label: "Low Budget", icon: PiggyBank, desc: "Free tools & bootstrapping" },
+    { key: "long-term", label: "Long-Term Strategic", icon: Target, desc: "Sustainable growth & foundations" },
+  ];
+
+  const strategyLabels: Record<string, string> = {
+    balanced: "Balanced", fast: "Fast Execution", "low-budget": "Low Budget", "long-term": "Long-Term Strategic",
   };
 
   return (
