@@ -14,7 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      shared_plans: {
+        Row: {
+          completed_tasks: Json | null
+          created_at: string
+          goal: string
+          high_impact: Json | null
+          id: string
+          language: string | null
+          pillars: Json
+          strategy: string | null
+        }
+        Insert: {
+          completed_tasks?: Json | null
+          created_at?: string
+          goal: string
+          high_impact?: Json | null
+          id?: string
+          language?: string | null
+          pillars: Json
+          strategy?: string | null
+        }
+        Update: {
+          completed_tasks?: Json | null
+          created_at?: string
+          goal?: string
+          high_impact?: Json | null
+          id?: string
+          language?: string | null
+          pillars?: Json
+          strategy?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

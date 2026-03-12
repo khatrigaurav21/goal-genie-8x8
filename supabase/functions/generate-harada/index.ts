@@ -9,7 +9,7 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { goal, language = "en" } = await req.json();
+    const { goal, language = "en", strategy = "balanced" } = await req.json();
     if (!goal || typeof goal !== "string" || goal.trim().length === 0) {
       return new Response(JSON.stringify({ error: "Goal is required" }), {
         status: 400,
@@ -27,11 +27,21 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
+    const strategyInstructions: Record<string, string> = {
+      balanced: "Use a well-rounded, balanced approach covering all key aspects of the goal.",
+      fast: "Focus on FAST EXECUTION. Prioritize quick wins, parallel tasks, shortcuts, and rapid iteration. Tasks should emphasize speed, momentum, and doing things in the most time-efficient way possible.",
+      "low-budget": "Focus on a LOW-BUDGET approach. Prioritize free tools, bootstrapping, DIY methods, and cost-effective strategies. Tasks should minimize financial investment while maximizing results.",
+      "long-term": "Focus on a LONG-TERM STRATEGIC approach. Prioritize sustainable growth, building strong foundations, compounding effects, and strategic positioning. Tasks should emphasize patience, quality, and lasting results.",
+    };
+    const strategyText = strategyInstructions[strategy] || strategyInstructions.balanced;
+
 const systemPrompt = `You are an expert in the Harada Method (also known as the Mandala Chart or Open Window 64).
 Given a user's ambitious goal, generate a complete Harada Method grid with:
 - 8 supporting pillars (key areas/categories that support the main goal)
 - 8 specific, actionable tasks for each pillar (64 tasks total)
 - Identify the 10 highest-impact tasks across all pillars that would have the greatest effect on achieving the goal
+
+STRATEGY: ${strategyText}
 
 Tasks should be concrete, measurable, and actionable. Each task should be a short phrase (3-8 words).
 
