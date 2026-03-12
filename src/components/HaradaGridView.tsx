@@ -28,14 +28,19 @@ interface HaradaGridViewProps {
   isGenerating?: boolean;
 }
 
-export default function HaradaGridView({ data, onReset, language = "en" }: HaradaGridViewProps) {
+export default function HaradaGridView({
+  data, onReset, language = "en",
+  plans = [], activePlanIndex = 0, onSwitchPlan, onGenerateAlternative, isGenerating = false,
+}: HaradaGridViewProps) {
   const gridRef = useRef<HTMLDivElement>(null);
   const [shareOpen, setShareOpen] = useState(false);
+  const [altPlanOpen, setAltPlanOpen] = useState(false);
   const [completedTasks, setCompletedTasks] = useState<Set<string>>(new Set());
   const [celebratingPillar, setCelebratingPillar] = useState<number | null>(null);
   const [allComplete, setAllComplete] = useState(false);
   const [expandedTask, setExpandedTask] = useState<{ task: string; pillar: string } | null>(null);
   const [showReflection, setShowReflection] = useState(false);
+  const [isSharing, setIsSharing] = useState(false);
   const { isDark, pillarColors, pillarDoneColors, pillarBorderColors, emptyBg, textColor } = usePillarColors();
   const cells = buildGridCells(data);
 
