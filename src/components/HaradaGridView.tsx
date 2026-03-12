@@ -2,7 +2,7 @@ import { useRef, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { buildGridCells, type HaradaGrid } from "@/lib/harada";
 import { toPng } from "html-to-image";
-import { Download, Link2, X as XIcon, Linkedin, ChevronDown, Check, Star, Sparkles, Calendar } from "lucide-react";
+import { Download, Link2, X as XIcon, Linkedin, ChevronDown, Check, Star, Sparkles, Calendar, RefreshCw, Share2, Zap, PiggyBank, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import ThemeToggle from "@/components/ThemeToggle";
@@ -10,11 +10,22 @@ import { usePillarColors } from "@/lib/theme-colors";
 import DailyFocusPanel from "@/components/DailyFocusPanel";
 import TaskExpandPanel from "@/components/TaskExpandPanel";
 import WeeklyReflection from "@/components/WeeklyReflection";
+import { supabase } from "@/integrations/supabase/client";
+
+interface PlanVersion {
+  data: HaradaGrid;
+  strategy: string;
+}
 
 interface HaradaGridViewProps {
   data: HaradaGrid;
   onReset: () => void;
   language?: string;
+  plans?: PlanVersion[];
+  activePlanIndex?: number;
+  onSwitchPlan?: (index: number) => void;
+  onGenerateAlternative?: (strategy: string) => void;
+  isGenerating?: boolean;
 }
 
 export default function HaradaGridView({ data, onReset, language = "en" }: HaradaGridViewProps) {
