@@ -301,32 +301,76 @@ export default function HaradaGridView({
         <span className="text-xs text-muted-foreground">{progressPercent}%</span>
       </div>
 
-      {/* Progress tracker */}
+      {/* Goal Card */}
       <div className="container max-w-5xl mx-auto px-4 pt-6">
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-card border border-border rounded-lg p-4 mb-6 shadow-sm"
+          className="bg-card border border-border rounded-xl p-5 mb-4 shadow-sm"
         >
-          <div className="flex items-center justify-between mb-2">
-            <h2 className="font-serif font-bold text-foreground text-lg">Goal Progress</h2>
-            <span className="text-sm font-medium text-primary">{progressPercent}% complete</span>
+          <div className="flex items-start gap-4">
+            <div className="w-14 h-14 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
+              <Target className="w-7 h-7 text-primary" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1">Your Goal</p>
+              <h2 className="font-serif font-bold text-foreground text-xl sm:text-2xl leading-tight mb-2">{data.goal}</h2>
+              <div className="flex items-center gap-3">
+                <div className="flex-1 max-w-xs h-2.5 rounded-full bg-secondary overflow-hidden">
+                  <motion.div
+                    className="h-full rounded-full bg-primary"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${progressPercent}%` }}
+                    transition={{ duration: 0.5, ease: "easeOut" }}
+                  />
+                </div>
+                <span className="text-sm font-semibold text-foreground">{completedCount}/{totalTasks}</span>
+                <span className="text-sm text-primary font-medium">{progressPercent}%</span>
+              </div>
+            </div>
           </div>
-          <div className="w-full h-3 rounded-full bg-secondary overflow-hidden mb-2">
-            <motion.div
-              className="h-full rounded-full bg-primary"
-              initial={{ width: 0 }}
-              animate={{ width: `${progressPercent}%` }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-            />
-          </div>
-          <p className="text-sm text-muted-foreground">
-            <span className="font-semibold text-foreground">{completedCount}</span> / {totalTasks} tasks completed
-          </p>
         </motion.div>
       </div>
 
-      {/* Main content: Daily Focus + Grid */}
+      {/* Pillar Navigation Bar */}
+      <div className="container max-w-5xl mx-auto px-4 mb-4">
+        <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide">
+          <button
+            onClick={() => setFocusedPillar(null)}
+            className={`shrink-0 px-3 py-2 rounded-lg text-xs font-medium transition-all ${
+              focusedPillar === null
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "bg-card border border-border text-muted-foreground hover:text-foreground hover:border-primary/30"
+            }`}
+          >
+            All Pillars
+          </button>
+          {data.pillars.map((p, i) => {
+            const isComplete = completedPillarSet.has(i);
+            return (
+              <button
+                key={i}
+                onClick={() => setFocusedPillar(focusedPillar === i ? null : i)}
+                className={`shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all ${
+                  focusedPillar === i
+                    ? "shadow-sm text-foreground"
+                    : "bg-card border border-border text-muted-foreground hover:text-foreground hover:border-primary/30"
+                }`}
+                style={focusedPillar === i ? { backgroundColor: pillarColors[i], borderColor: pillarBorderColors[i] } : {}}
+              >
+                <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: pillarColors[i] }} />
+                <span className="truncate max-w-[100px]">{p.name}</span>
+                <span className={`text-[10px] ${isComplete ? "text-primary" : ""}`}>
+                  {pillarProgress[i]}/8
+                </span>
+                {isComplete && <Check className="w-3 h-3 text-primary shrink-0" strokeWidth={3} />}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Main content: Daily Focus + Pillar Cards */}
       <div className="container max-w-7xl mx-auto px-4 pb-8">
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Daily Focus Panel */}
@@ -338,97 +382,155 @@ export default function HaradaGridView({
             />
           </div>
 
-          {/* Grid */}
+          {/* Pillar Cards Grid */}
           <div className="flex-1 min-w-0">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5 }}
-            >
-              <div
-                ref={gridRef}
-                className="harada-grid rounded-lg overflow-hidden border border-border shadow-lg bg-background p-1"
-              >
-                {cells.flat().map((cell, i) => {
-                  const pillarBg = cell.pillarIndex !== undefined ? pillarColors[cell.pillarIndex] : undefined;
-                  const pillarDoneBg = cell.pillarIndex !== undefined ? pillarDoneColors[cell.pillarIndex] : undefined;
-                  const pillarBorder = cell.pillarIndex !== undefined ? pillarBorderColors[cell.pillarIndex] : undefined;
-                  const isTask = cell.type === "task" && cell.text;
-                  const taskKey = cell.pillarIndex !== undefined ? `${cell.pillarIndex}-${cell.text}` : "";
-                  const isDone = isTask && completedTasks.has(taskKey);
-                  const isHighImpact = isTask && highImpactSet.has(taskKey);
-                  const isPillarCelebrating = cell.pillarIndex !== undefined && celebratingPillar === cell.pillarIndex;
-                  const isPillarComplete = cell.pillarIndex !== undefined && completedPillarSet.has(cell.pillarIndex);
+            {/* Hidden 9x9 grid for PNG export */}
+            <div ref={gridRef} className="harada-grid rounded-lg overflow-hidden border border-border bg-background p-1 absolute -left-[9999px] opacity-0 pointer-events-none" aria-hidden>
+              {cells.flat().map((cell, i) => {
+                const pillarBg = cell.pillarIndex !== undefined ? pillarColors[cell.pillarIndex] : undefined;
+                const pillarDoneBg = cell.pillarIndex !== undefined ? pillarDoneColors[cell.pillarIndex] : undefined;
+                const pillarBorder = cell.pillarIndex !== undefined ? pillarBorderColors[cell.pillarIndex] : undefined;
+                const isTask = cell.type === "task" && cell.text;
+                const taskKey = cell.pillarIndex !== undefined ? `${cell.pillarIndex}-${cell.text}` : "";
+                const isDone = isTask && completedTasks.has(taskKey);
+                return (
+                  <div
+                    key={i}
+                    className={`harada-cell rounded-sm ${
+                      cell.type === "center" ? "harada-cell-center" : cell.type === "pillar" ? "font-semibold font-serif" : ""
+                    }`}
+                    style={{
+                      backgroundColor: cell.type === "center" ? undefined : cell.type === "pillar" ? pillarBg : isDone ? pillarDoneBg : cell.type === "task" ? `${pillarBg}80` : emptyBg,
+                      borderLeft: cell.type === "pillar" ? `3px solid ${pillarBorder}` : undefined,
+                      color: cell.type === "center" ? undefined : textColor,
+                    }}
+                  >
+                    <span className={isDone ? "line-through opacity-60" : ""}>{cell.text}</span>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Visible Pillar Cards */}
+            <motion.div layout className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <AnimatePresence mode="popLayout">
+                {data.pillars.map((pillar, i) => {
+                  if (focusedPillar !== null && focusedPillar !== i) return null;
+                  const isComplete = completedPillarSet.has(i);
+                  const isCelebrating = celebratingPillar === i;
+                  const pillarPercent = Math.round((pillarProgress[i] / 8) * 100);
 
                   return (
                     <motion.div
-                      key={`${i}-${isDone ? "done" : "todo"}-${isPillarComplete ? "pc" : "pi"}`}
-                      initial={{ opacity: 0, scale: 0.8 }}
+                      key={i}
+                      layout
+                      initial={{ opacity: 0, scale: 0.95 }}
                       animate={{
                         opacity: 1,
-                        scale: isPillarCelebrating ? [1, 1.08, 0.96, 1.03, 1] : 1,
-                        rotate: isPillarCelebrating ? [0, -2, 2, -1, 0] : 0,
+                        scale: isCelebrating ? [1, 1.02, 0.98, 1] : 1,
                       }}
-                      transition={
-                        isPillarCelebrating
-                          ? { duration: 0.6, ease: "easeInOut" }
-                          : { delay: i * 0.008, duration: 0.3 }
-                      }
-                      onClick={isTask ? () => toggleTask(i, cell.pillarIndex!, cell.text) : undefined}
-                      className={`harada-cell rounded-sm relative group ${
-                        cell.type === "center"
-                          ? "harada-cell-center"
-                          : cell.type === "pillar"
-                          ? "font-semibold font-serif"
-                          : ""
-                      } ${isTask ? "cursor-pointer hover:ring-2 hover:ring-primary/30 transition-all active:scale-95" : ""}`}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ duration: 0.3, delay: i * 0.05 }}
+                      className={`rounded-xl border overflow-hidden transition-shadow ${
+                        isComplete ? "shadow-md" : "shadow-sm"
+                      } ${focusedPillar === i ? "md:col-span-2" : ""}`}
                       style={{
-                        backgroundColor:
-                          cell.type === "center"
-                            ? undefined
-                            : cell.type === "pillar" && isPillarComplete
-                            ? pillarDoneBg
-                            : cell.type === "pillar"
-                            ? pillarBg
-                            : isDone
-                            ? pillarDoneBg
-                            : cell.type === "task"
-                            ? `${pillarBg}80`
-                            : emptyBg,
-                        borderLeft: cell.type === "pillar" ? `3px solid ${pillarBorder}` : undefined,
-                        color: cell.type === "center" ? undefined : textColor,
-                        boxShadow: isPillarCelebrating
-                          ? `0 0 16px 4px ${pillarBorder}60`
-                          : isPillarComplete && cell.type === "pillar"
-                          ? `inset 0 0 12px ${pillarBorder}30`
-                          : undefined,
+                        borderColor: pillarBorderColors[i],
+                        boxShadow: isCelebrating ? `0 0 20px 4px ${pillarBorderColors[i]}40` : undefined,
                       }}
                     >
-                      {/* High Impact star */}
-                      {isHighImpact && !isDone && (
-                        <Star className="absolute top-0.5 left-0.5 w-3 h-3 text-[hsl(var(--gold))] fill-[hsl(var(--gold))]" />
-                      )}
+                      {/* Pillar header */}
+                      <div
+                        className="px-4 py-3 flex items-center justify-between cursor-pointer"
+                        style={{ backgroundColor: pillarColors[i] }}
+                        onClick={() => setFocusedPillar(focusedPillar === i ? null : i)}
+                      >
+                        <div className="flex items-center gap-2 min-w-0">
+                          <div className="w-6 h-6 rounded-md flex items-center justify-center text-xs font-bold shrink-0" style={{ backgroundColor: pillarBorderColors[i], color: "#fff" }}>
+                            {i + 1}
+                          </div>
+                          <h3 className="font-serif font-bold text-sm truncate" style={{ color: textColor }}>
+                            {pillar.name}
+                          </h3>
+                          {isComplete && (
+                            <motion.span
+                              initial={{ scale: 0 }}
+                              animate={{ scale: 1 }}
+                              className="text-base select-none shrink-0"
+                            >
+                              🎉
+                            </motion.span>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span className="text-xs font-medium" style={{ color: textColor }}>
+                            {pillarProgress[i]}/8
+                          </span>
+                          <div className="w-16 h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: `${pillarBorderColors[i]}30` }}>
+                            <motion.div
+                              className="h-full rounded-full"
+                              style={{ backgroundColor: pillarBorderColors[i] }}
+                              animate={{ width: `${pillarPercent}%` }}
+                              transition={{ duration: 0.3 }}
+                            />
+                          </div>
+                        </div>
+                      </div>
 
-                      {/* AI Expand button */}
-                      {isTask && (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setExpandedTask({
-                              task: cell.text,
-                              pillar: data.pillars[cell.pillarIndex!].name,
-                            });
-                          }}
-                          className="absolute bottom-0.5 right-0.5 w-5 h-5 rounded-full bg-primary/10 hover:bg-primary/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                          title="AI Expand"
-                        >
-                          <Sparkles className="w-2.5 h-2.5 text-primary" />
-                        </button>
-                      )}
+                      {/* Tasks list */}
+                      <div className="bg-card divide-y divide-border">
+                        {pillar.tasks.map((task, ti) => {
+                          const taskKey = `${i}-${task}`;
+                          const isDone = completedTasks.has(taskKey);
+                          const isHighImpact = highImpactSet.has(taskKey);
 
-                      {/* Pillar confetti */}
-                      {cell.type === "pillar" && isPillarCelebrating && (
-                        <>
+                          return (
+                            <motion.div
+                              key={ti}
+                              className={`group flex items-center gap-3 px-4 py-2.5 cursor-pointer transition-colors ${
+                                isDone ? "bg-muted/40" : "hover:bg-muted/30"
+                              }`}
+                              onClick={() => toggleTask(0, i, task)}
+                              whileTap={{ scale: 0.98 }}
+                            >
+                              {/* Checkbox */}
+                              <div
+                                className={`w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 transition-all ${
+                                  isDone ? "border-primary bg-primary" : "border-border group-hover:border-primary/50"
+                                }`}
+                              >
+                                {isDone && <Check className="w-3 h-3 text-primary-foreground" strokeWidth={3} />}
+                              </div>
+
+                              {/* Task text */}
+                              <span className={`flex-1 text-sm leading-snug ${isDone ? "line-through text-muted-foreground" : "text-foreground"}`}>
+                                {task}
+                              </span>
+
+                              {/* Badges */}
+                              <div className="flex items-center gap-1 shrink-0">
+                                {isHighImpact && !isDone && (
+                                  <Star className="w-3.5 h-3.5 text-[hsl(var(--gold))] fill-[hsl(var(--gold))]" />
+                                )}
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setExpandedTask({ task, pillar: pillar.name });
+                                  }}
+                                  className="w-6 h-6 rounded-full bg-primary/10 hover:bg-primary/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                  title="AI Expand"
+                                >
+                                  <Sparkles className="w-3 h-3 text-primary" />
+                                </button>
+                              </div>
+                            </motion.div>
+                          );
+                        })}
+                      </div>
+
+                      {/* Pillar celebration confetti */}
+                      {isCelebrating && (
+                        <div className="relative h-0">
                           {["🎉", "✨", "⭐", "🎊", "💫", "🌟"].map((emoji, ei) => (
                             <motion.span
                               key={ei}
@@ -436,53 +538,22 @@ export default function HaradaGridView({
                               animate={{
                                 opacity: [1, 1, 0],
                                 scale: [0.5, 1.2, 0.8],
-                                x: Math.cos((ei / 6) * Math.PI * 2) * 35,
-                                y: Math.sin((ei / 6) * Math.PI * 2) * 35 - 10,
+                                x: Math.cos((ei / 6) * Math.PI * 2) * 50,
+                                y: Math.sin((ei / 6) * Math.PI * 2) * 30 - 20,
                               }}
                               transition={{ duration: 0.8, ease: "easeOut" }}
-                              className="absolute z-20 text-sm pointer-events-none"
-                              style={{ top: "50%", left: "50%" }}
+                              className="absolute z-20 text-lg pointer-events-none"
+                              style={{ top: "-20px", left: "50%" }}
                             >
                               {emoji}
                             </motion.span>
                           ))}
-                        </>
+                        </div>
                       )}
-                      {cell.type === "pillar" && isPillarComplete && (
-                        <motion.div
-                          initial={{ scale: 0, rotate: -180 }}
-                          animate={{ scale: 1, rotate: 0 }}
-                          transition={{ type: "spring", stiffness: 300, damping: 15, delay: isPillarCelebrating ? 0.6 : 0 }}
-                          className="absolute -top-1.5 -right-1.5 z-10 text-base select-none"
-                        >
-                          🎉
-                        </motion.div>
-                      )}
-                      {isPillarCelebrating && (
-                        <motion.div
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: [0, 0.5, 0] }}
-                          transition={{ duration: 0.8 }}
-                          className="absolute inset-0 rounded-sm"
-                          style={{
-                            background: `linear-gradient(135deg, transparent 30%, ${pillarBorder}40 50%, transparent 70%)`,
-                          }}
-                        />
-                      )}
-                      {isDone && (
-                        <motion.div
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          className="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-primary flex items-center justify-center"
-                        >
-                          <Check className="w-2.5 h-2.5 text-primary-foreground" strokeWidth={3} />
-                        </motion.div>
-                      )}
-                      <span className={isDone ? "line-through opacity-60" : ""}>{cell.text}</span>
                     </motion.div>
                   );
                 })}
-              </div>
+              </AnimatePresence>
             </motion.div>
 
             {/* All-complete celebration */}
@@ -492,52 +563,24 @@ export default function HaradaGridView({
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}
-                  className="mt-6 text-center p-4 rounded-lg border border-primary/30 bg-primary/5"
+                  className="mt-6 text-center p-6 rounded-xl border border-primary/30 bg-primary/5"
                 >
                   <motion.div
                     animate={{ scale: [1, 1.1, 1] }}
                     transition={{ duration: 2, repeat: Infinity }}
-                    className="text-3xl mb-2"
+                    className="text-4xl mb-3"
                   >
                     🏆
                   </motion.div>
-                  <p className="font-serif font-bold text-foreground">Goal Mastered!</p>
+                  <p className="font-serif font-bold text-foreground text-lg">Goal Mastered!</p>
                   <p className="text-sm text-muted-foreground">All 64 tasks complete. Incredible discipline.</p>
                 </motion.div>
               )}
             </AnimatePresence>
 
-            {/* Legend */}
-            <div className="mt-6 flex flex-wrap gap-4 justify-center">
-              {data.pillars.map((p, i) => {
-                const isComplete = completedPillarSet.has(i);
-                return (
-                  <motion.div
-                    key={i}
-                    className={`flex items-center gap-1.5 text-xs ${isComplete ? "text-foreground font-medium" : "text-muted-foreground"}`}
-                    animate={isComplete ? { scale: [1, 1.1, 1] } : {}}
-                    transition={{ duration: 0.4 }}
-                  >
-                    <div
-                      className="w-3 h-3 rounded-sm relative"
-                      style={{ backgroundColor: pillarColors[i] }}
-                    >
-                      {isComplete && (
-                        <Check className="w-3 h-3 text-primary absolute inset-0" strokeWidth={3} />
-                      )}
-                    </div>
-                    <span className={isComplete ? "line-through" : ""}>{p.name}</span>
-                    <span className="text-[10px] font-medium ml-0.5">
-                      ({pillarProgress[i]}/8)
-                    </span>
-                  </motion.div>
-                );
-              })}
-            </div>
-
             {/* High Impact legend */}
             {(data.highImpact?.length ?? 0) > 0 && (
-              <div className="mt-3 flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
+              <div className="mt-4 flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
                 <Star className="w-3 h-3 text-[hsl(var(--gold))] fill-[hsl(var(--gold))]" />
                 <span>= High Impact task</span>
               </div>
