@@ -9,7 +9,7 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { goal, language = "en" } = await req.json();
+    const { goal, language = "en", strategy = "balanced" } = await req.json();
     if (!goal || typeof goal !== "string" || goal.trim().length === 0) {
       return new Response(JSON.stringify({ error: "Goal is required" }), {
         status: 400,
