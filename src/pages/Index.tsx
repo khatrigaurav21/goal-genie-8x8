@@ -3,6 +3,7 @@ import GoalInput from "@/components/GoalInput";
 import HaradaGridView from "@/components/HaradaGridView";
 import LoadingSkeleton from "@/components/LoadingSkeleton";
 import type { HaradaGrid } from "@/lib/harada";
+import { parseHaradaGrid } from "@/lib/schema";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -25,14 +26,20 @@ const Index = () => {
       const raw = sessionStorage.getItem("copyPlan");
       if (raw) {
         try {
-          const data = JSON.parse(raw) as HaradaGrid;
-          setPlans([{ data, strategy: "balanced" }]);
-          setActivePlanIndex(0);
+          const parsed = parseHaradaGrid(JSON.parse(raw));
           sessionStorage.removeItem("copyPlan");
-          // Clean URL
           window.history.replaceState({}, "", "/");
-          toast.success("Plan copied! You can now track your own progress.");
-        } catch { /* ignore */ }
+          if (parsed.success) {
+            setPlans([{ data: parsed.data, strategy: "balanced" }]);
+            setActivePlanIndex(0);
+            toast.success("Plan copied! You can now track your own progress.");
+          } else {
+            toast.error("That plan couldn't be copied — its data looks corrupted.");
+          }
+        } catch {
+          sessionStorage.removeItem("copyPlan");
+          toast.error("That plan couldn't be copied — its data looks corrupted.");
+        }
       }
     }
   }, []);
@@ -49,7 +56,12 @@ const Index = () => {
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
 
-      const newPlan: PlanVersion = { data: data as HaradaGrid, strategy };
+      const parsed = parseHaradaGrid(data);
+      if (!parsed.success) {
+        throw new Error("The AI returned an unexpected plan format. Please try again.");
+      }
+
+      const newPlan: PlanVersion = { data: parsed.data, strategy };
       setPlans((prev) => [...prev, newPlan]);
       setActivePlanIndex(plans.length); // point to newly added
     } catch (e: any) {

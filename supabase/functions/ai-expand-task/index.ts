@@ -16,6 +16,12 @@ serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+    if (String(task).length > 300 || String(goal).length > 300 || String(pillar || "").length > 200) {
+      return new Response(JSON.stringify({ error: "Input is too long" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     const langNames: Record<string, string> = {
       en: "English", ja: "Japanese", es: "Spanish", fr: "French",

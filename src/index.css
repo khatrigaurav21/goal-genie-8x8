@@ -142,30 +142,36 @@
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='%23191d24'/%3E%3Crect width='1' height='1' fill='%23222830' opacity='0.3'/%3E%3C/svg%3E");
 }
 
-/* Grid styles */
-.harada-grid {
+/* Harada mega-grid: 3x3 grid of pillar blocks, each block its own 3x3 of cells */
+.harada-mega-grid {
   display: grid;
-  grid-template-columns: repeat(9, 1fr);
-  grid-template-rows: repeat(9, 1fr);
-  gap: 2px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.625rem;
+}
+
+@media (min-width: 640px) {
+  .harada-mega-grid {
+    gap: 0.875rem;
+  }
+}
+
+.harada-block {
+  display: flex;
+}
+
+.harada-block-center {
+  background: linear-gradient(135deg, hsl(var(--primary) / 0.08), hsl(var(--card)) 60%);
 }
 
 .harada-cell {
-  @apply flex items-center justify-center p-1 text-center text-[10px] sm:text-xs leading-tight transition-all duration-200;
-  min-height: 60px;
+  @apply flex items-center justify-center text-center leading-snug transition-all duration-200;
+  min-height: 52px;
 }
 
-.harada-cell-center {
-  @apply bg-primary text-primary-foreground font-bold;
-}
-
-.harada-cell-pillar {
-  background: hsl(var(--cell-pillar));
-  @apply font-semibold;
-}
-
-.harada-cell-task {
-  background: hsl(var(--cell-task));
+@media (min-width: 640px) {
+  .harada-cell {
+    min-height: 68px;
+  }
 }
 
 /* Decorative elements */
@@ -181,4 +187,50 @@
 
 .animate-fade-up {
   animation: fade-up 0.6s ease-out forwards;
+}
+
+/* Ambient ink-wash blobs — slow drifting color washes behind content */
+@keyframes drift-a {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(4%, 6%) scale(1.08); }
+  66% { transform: translate(-3%, -4%) scale(0.96); }
+}
+
+@keyframes drift-b {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  40% { transform: translate(-6%, 3%) scale(1.06); }
+  75% { transform: translate(5%, -5%) scale(0.98); }
+}
+
+@keyframes drift-c {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(3%, -6%) scale(1.1); }
+}
+
+.ambient-blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(60px);
+  pointer-events: none;
+  opacity: 0.35;
+}
+
+.dark .ambient-blob {
+  opacity: 0.18;
+}
+
+.ambient-blob-1 {
+  animation: drift-a 22s ease-in-out infinite;
+}
+.ambient-blob-2 {
+  animation: drift-b 26s ease-in-out infinite;
+}
+.ambient-blob-3 {
+  animation: drift-c 30s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ambient-blob-1, .ambient-blob-2, .ambient-blob-3 {
+    animation: none;
+  }
 }

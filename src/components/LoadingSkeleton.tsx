@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import ThemeToggle from "@/components/ThemeToggle";
 import { usePillarColors } from "@/lib/theme-colors";
+import AmbientBlobs from "@/components/AmbientBlobs";
 
 const TIPS = [
   "Breaking your goal into 8 pillars…",
@@ -47,8 +48,9 @@ export default function LoadingSkeleton({ goal }: { goal: string }) {
   });
 
   return (
-    <div className="min-h-screen bg-background paper-texture flex flex-col">
-      <header className="border-b border-border bg-background/80 backdrop-blur-sm">
+    <div className="min-h-screen bg-background paper-texture flex flex-col relative overflow-hidden">
+      <AmbientBlobs />
+      <header className="border-b border-border bg-background/80 backdrop-blur-sm relative z-10">
         <div className="container max-w-5xl mx-auto flex items-center justify-between px-4 py-4">
           <div className="font-serif text-2xl font-bold tracking-wide">
             原<span className="text-primary">日</span>
@@ -58,7 +60,7 @@ export default function LoadingSkeleton({ goal }: { goal: string }) {
         </div>
       </header>
 
-      <main className="flex-1 flex flex-col items-center justify-center px-4 py-8">
+      <main className="flex-1 flex flex-col items-center justify-center px-4 py-8 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}

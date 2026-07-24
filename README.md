@@ -1,73 +1,79 @@
-# Welcome to your Lovable project
+# Goal Genie (8x8)
 
-## Project info
+A goal-planning app built around the Harada Method (the "8x8" grid): one core goal
+surrounded by 8 supporting pillars, each broken into 8 concrete tasks — 64 cells
+total. Goal Genie generates that grid for you, tracks daily progress against it,
+and helps you reflect on how the week went.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Features
 
-## How can I edit this code?
+- **Harada grid view** — the full 64-cell grid with per-task completion tracking
+  and pillar-completion celebrations.
+- **AI-assisted planning** — generate a starting grid from a single goal, and
+  expand any task into more detail, via Supabase edge functions.
+- **Daily focus panel** — a pared-down view of what matters today.
+- **Weekly reflection** — a structured check-in against the grid.
+- **Gallery & sharing** — save plans, browse past ones, and share a plan via a
+  public link with PNG export.
+- **Light/dark theme.**
 
-There are several ways of editing your application.
+## Stack
 
-**Use Lovable**
+Vite, React 18, TypeScript, Tailwind CSS, shadcn-ui (Radix primitives), TanStack
+Query, react-router-dom, and Supabase (Postgres + edge functions) for the
+backend.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+## Getting started
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+# 1. Clone the repo
+git clone <this-repo-url>
+cd goal-genie-8x8
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# 2. Install dependencies
+npm install
 
-# Step 3: Install the necessary dependencies.
-npm i
+# 3. Set up environment variables
+cp .env.example .env
+# then fill in your Supabase project's URL, project ID, and publishable (anon) key
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# 4. Run the dev server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+## Building for production
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```sh
+npm run build
+```
 
-**Use GitHub Codespaces**
+This runs a Vite production build to `dist/`. Confirm it exits with no errors
+and that the app loads correctly from a local preview (`npm run preview`)
+before deploying.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Supabase
 
-## What technologies are used for this project?
+This project uses three Supabase edge functions (`supabase/functions/`):
 
-This project is built with:
+- `generate-harada` — generates a starting 8x8 grid from a goal.
+- `ai-expand-task` — expands a single task into more detail.
+- `weekly-reflection` — powers the weekly reflection flow.
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+The Supabase project ID and schema migration live under `supabase/`. The
+`VITE_SUPABASE_PUBLISHABLE_KEY` in `.env` is the public anon key, safe for
+client-side use, but should still never be committed to version control since
+it's tied to a specific project.
 
-## How can I deploy this project?
+## Testing
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+```sh
+npm run test        # run once
+npm run test:watch  # watch mode
+```
 
-## Can I connect a custom domain to my Lovable project?
+## Deployment
 
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Any static host that can serve a Vite build works (Vercel, Netlify, Cloudflare
+Pages, etc). Point the build command at `npm run build` and the output
+directory at `dist/`, and set the three `VITE_SUPABASE_*` environment
+variables in your host's dashboard.

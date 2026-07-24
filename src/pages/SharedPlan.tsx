@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { buildGridCells, type HaradaGrid } from "@/lib/harada";
+import { buildGridCells, type HaradaGrid, type Pillar } from "@/lib/harada";
+import { parseHaradaGrid } from "@/lib/schema";
 import { motion } from "framer-motion";
 import { Check, Star, Copy, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -9,23 +10,54 @@ import { usePillarColors } from "@/lib/theme-colors";
 import ThemeToggle from "@/components/ThemeToggle";
 import { toast } from "sonner";
 
+interface SharedPlanRow {
+  goal: string;
+  pillars: Pillar[];
+  high_impact: string[];
+  completed_tasks: string[];
+  strategy: string;
+}
+
 export default function SharedPlan() {
   const { id } = useParams<{ id: string }>();
-  const [plan, setPlan] = useState<any>(null);
+  const [plan, setPlan] = useState<SharedPlanRow | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const { pillarColors, pillarDoneColors, pillarBorderColors, emptyBg, textColor } = usePillarColors();
 
   useEffect(() => {
     if (!id) return;
+    // The id comes straight from the URL. Supabase's query builder parameterizes
+    // it (no raw SQL string concatenation happening here), so this isn't an
+    // injection vector — but the row it returns is otherwise untrusted, since
+    // the shared_plans table accepts unauthenticated, unvalidated inserts from
+    // anyone. Validate its shape before it ever reaches the grid renderer.
     supabase
       .from("shared_plans")
       .select("*")
       .eq("id", id)
       .single()
       .then(({ data, error }) => {
-        if (error || !data) setError("Plan not found");
-        else setPlan(data);
+        if (error || !data) {
+          setError("Plan not found");
+        } else {
+          const parsed = parseHaradaGrid({
+            goal: data.goal,
+            pillars: data.pillars,
+            highImpact: data.high_impact,
+          });
+          if (!parsed.success) {
+            setError("This plan's data looks corrupted and can't be displayed.");
+          } else {
+            setPlan({
+              goal: parsed.data.goal,
+              pillars: parsed.data.pillars,
+              high_impact: parsed.data.highImpact || [],
+              completed_tasks: Array.isArray(data.completed_tasks) ? data.completed_tasks : [],
+              strategy: data.strategy || "balanced",
+            });
+          }
+        }
         setLoading(false);
       });
   }, [id]);
@@ -41,7 +73,7 @@ export default function SharedPlan() {
   if (error || !plan) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-4">
-        <p className="text-xl text-foreground font-serif">Plan not found</p>
+        <p className="text-xl text-foreground font-serif">{error || "Plan not found"}</p>
         <Link to="/">
           <Button variant="outline"><ArrowLeft className="w-4 h-4 mr-1" /> Back to Home</Button>
         </Link>
@@ -51,11 +83,11 @@ export default function SharedPlan() {
 
   const gridData: HaradaGrid = {
     goal: plan.goal,
-    pillars: plan.pillars as any,
-    highImpact: (plan.high_impact || []) as string[],
+    pillars: plan.pillars,
+    highImpact: plan.high_impact,
   };
   const cells = buildGridCells(gridData);
-  const completedSet = new Set<string>((plan.completed_tasks || []) as string[]);
+  const completedSet = new Set<string>(plan.completed_tasks);
   const highImpactSet = new Set<string>(gridData.highImpact || []);
   const completedCount = completedSet.size;
   const progressPercent = Math.round((completedCount / 64) * 100);

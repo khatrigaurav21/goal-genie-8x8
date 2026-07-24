@@ -11,6 +11,15 @@ serve(async (req) => {
   try {
     const { goal, completedTasks, challenges, nextWeekFocus, totalCompleted, totalTasks, language = "en" } = await req.json();
 
+    const overLimit = [goal, completedTasks, challenges, nextWeekFocus].some(
+      (v) => typeof v === "string" && v.length > 4000
+    );
+    if (overLimit) {
+      return new Response(JSON.stringify({ error: "Input is too long" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const langNames: Record<string, string> = {
       en: "English", ja: "Japanese", es: "Spanish", fr: "French",
       de: "German", pt: "Portuguese", zh: "Chinese", ko: "Korean",

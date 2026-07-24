@@ -16,6 +16,12 @@ serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+    if (goal.length > 300) {
+      return new Response(JSON.stringify({ error: "Goal is too long (max 300 characters)" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     const langNames: Record<string, string> = {
       en: "English", ja: "Japanese", es: "Spanish", fr: "French",
