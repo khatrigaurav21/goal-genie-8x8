@@ -50,6 +50,10 @@
     --sage: 150 15% 40%;
     --sage-light: 150 15% 92%;
 
+    /* Raised surface for grid blocks — in light mode the pale pillar-color
+       washes already do this job, so this just backs up the neutral cells. */
+    --grid-surface: 40 22% 90%;
+
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
@@ -100,6 +104,12 @@
     --indigo-light: 230 15% 20%;
     --sage: 150 12% 50%;
     --sage-light: 150 10% 18%;
+
+    /* Raised surface for grid blocks. Dark-mode blocks carry no colored
+       fill (pillar washes read muddy on near-black), so lightness has to
+       do the separating work alone — needs a real gap from --background
+       (10%), not the ~4-point gap --card (14%) gives it. */
+    --grid-surface: 220 10% 21%;
 
     --sidebar-background: 220 15% 10%;
     --sidebar-foreground: 40 20% 88%;
@@ -166,7 +176,7 @@
 }
 
 .harada-block-center {
-  background: linear-gradient(135deg, hsl(var(--primary) / 0.08), hsl(var(--card)) 60%);
+  background: linear-gradient(135deg, hsl(var(--primary) / 0.08), hsl(var(--grid-surface)) 60%);
 }
 
 .harada-cell {

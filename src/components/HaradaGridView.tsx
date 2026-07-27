@@ -661,10 +661,13 @@ export default function HaradaGridView({
                   : undefined;
                 // Dark mode: keep the block surface neutral and let color live in the
                 // border + pillar-label chip only — full saturated fills read muddy on near-black.
+                // Uses the dedicated --grid-surface token (not --card) since it needs a real
+                // lightness gap from --background on its own — dark blocks get no colored fill
+                // to help separate them, unlike light mode's pale pillar washes.
                 const blockBg = block.isCenter
                   ? undefined
                   : isDark
-                  ? "hsl(var(--card))"
+                  ? "hsl(var(--grid-surface))"
                   : blockAccentBg;
 
                 // Directional glow: each block's accent border lives only on the edge(s)
@@ -685,7 +688,7 @@ export default function HaradaGridView({
                 // use withAlpha() rather than concatenating a hex suffix onto it (that's invalid
                 // CSS and gets silently dropped, which is why these directional borders/glows
                 // weren't actually rendering).
-                const faintBorderColor = withAlpha(blockBorderColor ?? "hsl(0 0% 50%)", isDark ? 0.13 : 0.11);
+                const faintBorderColor = withAlpha(blockBorderColor ?? "hsl(0 0% 50%)", isDark ? 0.26 : 0.11);
                 const faintBorder = `1px solid ${faintBorderColor}`;
                 const glowBorder = `1.5px solid ${withAlpha(blockBorderColor ?? "hsl(0 0% 50%)", 0.85)}`;
                 const noBorder = "1.5px solid transparent";
