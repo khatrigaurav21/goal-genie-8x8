@@ -4,7 +4,7 @@ import { Calendar, X, Loader2, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
-import ReactMarkdown from "react-markdown";
+import MarkdownContent from "@/components/MarkdownContent";
 
 interface WeeklyReflectionProps {
   goal: string;
@@ -70,7 +70,7 @@ export default function WeeklyReflection({ goal, completedTasks, totalTasks, lan
         <div className="sticky top-0 bg-card/95 backdrop-blur-sm border-b border-border p-4 flex items-center justify-between z-10">
           <div className="flex items-center gap-2">
             <Calendar className="w-5 h-5 text-primary" />
-            <h3 className="font-serif font-bold text-foreground">Weekly Reflection</h3>
+            <h3 className="font-serif font-medium tracking-tight text-foreground">Weekly Reflection</h3>
           </div>
           <Button variant="ghost" size="icon" onClick={onClose}>
             <X className="w-4 h-4" />
@@ -135,9 +135,8 @@ export default function WeeklyReflection({ goal, completedTasks, totalTasks, lan
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="prose prose-sm dark:prose-invert max-w-none text-foreground"
             >
-              <ReactMarkdown>{summary}</ReactMarkdown>
+              <MarkdownContent content={summary} />
               <div className="mt-4 flex gap-2">
                 <Button variant="outline" onClick={() => setSummary(null)}>New Reflection</Button>
                 <Button onClick={onClose}>Done</Button>

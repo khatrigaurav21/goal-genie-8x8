@@ -7,7 +7,7 @@ import ThemeToggle from "@/components/ThemeToggle";
 import { galleryItems, type GalleryCategory } from "@/lib/gallery-data";
 import { buildGridCells, type HaradaGrid } from "@/lib/harada";
 import HaradaGridView from "@/components/HaradaGridView";
-import { usePillarColors } from "@/lib/theme-colors";
+import { usePillarColors, withAlpha } from "@/lib/theme-colors";
 
 const CATEGORIES: GalleryCategory[] = ["Sports", "Business", "Education", "Creative", "Health"];
 
@@ -35,7 +35,7 @@ function MiniGrid({ data }: { data: typeof galleryItems[0]["data"] }) {
                 : cell.type === "pillar"
                 ? pillarColors[cell.pillarIndex ?? 0]
                 : cell.pillarIndex !== undefined
-                ? `${pillarColors[cell.pillarIndex]}80`
+                ? withAlpha(pillarColors[cell.pillarIndex], 0.85)
                 : emptyBg,
           }}
         />
@@ -60,9 +60,9 @@ export default function Gallery() {
     <div className="min-h-screen bg-background paper-texture">
       <header className="border-b border-border bg-background/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="container max-w-5xl mx-auto flex items-center justify-between px-4 py-3">
-          <Link to="/" className="font-serif text-xl font-bold text-foreground tracking-wide">
+          <Link to="/" className="font-serif text-xl font-semibold text-foreground tracking-wide">
             原<span className="text-primary">日</span>
-            <span className="text-sm font-sans font-normal text-muted-foreground ml-2">HaraDaily</span>
+            <span className="text-xs font-sans font-medium tracking-[0.16em] uppercase text-muted-foreground ml-2.5">HaraDaily</span>
           </Link>
           <div className="flex items-center gap-2">
             <ThemeToggle />
@@ -79,7 +79,7 @@ export default function Gallery() {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
           <div className="text-center mb-10">
             <div className="font-serif text-4xl text-primary/10 mb-2 select-none" aria-hidden>感動</div>
-            <h1 className="font-serif text-3xl sm:text-4xl font-bold text-foreground mb-3">Inspiration Gallery</h1>
+            <h1 className="font-serif text-3xl sm:text-4xl font-medium tracking-tight text-foreground mb-3">Inspiration Gallery</h1>
             <p className="text-muted-foreground text-lg max-w-md mx-auto">
               Explore how others break down ambitious goals into 64 actionable steps.
             </p>

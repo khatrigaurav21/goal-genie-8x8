@@ -1,9 +1,10 @@
-# Goal Genie (8x8)
+# HaraDaily
 
 A goal-planning app built around the Harada Method (the "8x8" grid): one core goal
 surrounded by 8 supporting pillars, each broken into 8 concrete tasks — 64 cells
-total. Goal Genie generates that grid for you, tracks daily progress against it,
-and helps you reflect on how the week went.
+total. HaraDaily generates that grid for you, tracks daily progress against it,
+and helps you reflect on how the week went. Same framework Shohei Ohtani used to
+map out his career at 16.
 
 ## Features
 
@@ -28,7 +29,7 @@ backend.
 ```sh
 # 1. Clone the repo
 git clone <this-repo-url>
-cd goal-genie-8x8
+cd haradaily
 
 # 2. Install dependencies
 npm install

@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Sparkles, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import ReactMarkdown from "react-markdown";
+import MarkdownContent from "@/components/MarkdownContent";
 
 interface TaskExpandPanelProps {
   task: string;
@@ -51,24 +51,31 @@ export default function TaskExpandPanel({ task, pillar, goal, language, onClose 
           exit={{ x: "100%" }}
           transition={{ type: "spring", damping: 25, stiffness: 300 }}
           onClick={(e) => e.stopPropagation()}
-          className="relative w-full max-w-lg bg-card border-l border-border shadow-xl overflow-y-auto"
+          className="relative w-full max-w-lg bg-card border-l border-border shadow-2xl overflow-y-auto"
         >
-          <div className="sticky top-0 bg-card/95 backdrop-blur-sm border-b border-border p-4 flex items-center justify-between z-10">
-            <div>
-              <p className="text-xs text-muted-foreground">{pillar}</p>
-              <h3 className="font-serif font-bold text-foreground">{task}</h3>
+          <div className="sticky top-0 bg-card/95 backdrop-blur-md border-b border-border px-5 py-4 flex items-start justify-between gap-3 z-10">
+            <div className="flex items-start gap-3 min-w-0">
+              <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                <Sparkles className="w-4 h-4 text-primary" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-xs text-muted-foreground truncate">{pillar}</p>
+                <h3 className="font-serif font-semibold tracking-tight text-foreground leading-snug">{task}</h3>
+              </div>
             </div>
-            <Button variant="ghost" size="icon" onClick={onClose}>
+            <Button variant="ghost" size="icon" onClick={onClose} className="shrink-0">
               <X className="w-4 h-4" />
             </Button>
           </div>
 
           <div className="p-5">
             {!explanation && !isLoading && !error && (
-              <div className="text-center py-12">
-                <Sparkles className="w-10 h-10 text-primary mx-auto mb-4 opacity-60" />
-                <p className="text-sm text-muted-foreground mb-4">
-                  Get AI-powered guidance on how to complete this task
+              <div className="text-center py-14 px-4">
+                <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                  <Sparkles className="w-6 h-6 text-primary" />
+                </div>
+                <p className="text-sm text-muted-foreground mb-5 max-w-xs mx-auto leading-relaxed">
+                  Get a step-by-step breakdown of how to actually complete this task, plus tools and common pitfalls.
                 </p>
                 <Button onClick={handleExpand} className="bg-primary text-primary-foreground hover:bg-primary/90">
                   <Sparkles className="w-4 h-4 mr-2" />
@@ -78,14 +85,14 @@ export default function TaskExpandPanel({ task, pillar, goal, language, onClose 
             )}
 
             {isLoading && (
-              <div className="text-center py-12">
-                <Loader2 className="w-8 h-8 text-primary mx-auto mb-3 animate-spin" />
+              <div className="text-center py-14">
+                <Loader2 className="w-7 h-7 text-primary mx-auto mb-3 animate-spin" />
                 <p className="text-sm text-muted-foreground">Generating guidance...</p>
               </div>
             )}
 
             {error && (
-              <div className="text-center py-8">
+              <div className="text-center py-10 px-4">
                 <p className="text-sm text-destructive mb-3">{error}</p>
                 <Button variant="outline" onClick={handleExpand}>Try again</Button>
               </div>
@@ -95,9 +102,8 @@ export default function TaskExpandPanel({ task, pillar, goal, language, onClose 
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="prose prose-sm dark:prose-invert max-w-none text-foreground"
               >
-                <ReactMarkdown>{explanation}</ReactMarkdown>
+                <MarkdownContent content={explanation} />
               </motion.div>
             )}
           </div>

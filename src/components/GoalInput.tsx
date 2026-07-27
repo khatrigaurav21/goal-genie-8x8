@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { Sparkles, ArrowRight, Compass, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,6 +29,7 @@ interface GoalInputProps {
 export default function GoalInput({ onGenerate, isLoading }: GoalInputProps) {
   const [goal, setGoal] = useState("");
   const [language, setLanguage] = useState("en");
+  const prefersReducedMotion = useReducedMotion();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,9 +50,9 @@ export default function GoalInput({ onGenerate, isLoading }: GoalInputProps) {
       {/* Nav */}
       <header className="border-b border-border bg-background/80 backdrop-blur-sm relative z-10">
         <div className="container max-w-5xl mx-auto flex items-center justify-between px-4 py-4">
-          <div className="font-serif text-2xl font-bold tracking-wide">
+          <div className="font-serif text-2xl font-semibold tracking-wide">
             原<span className="text-primary">日</span>
-            <span className="text-sm font-sans font-normal text-muted-foreground ml-2">HaraDaily</span>
+            <span className="text-xs font-sans font-medium tracking-[0.16em] uppercase text-muted-foreground ml-2.5">HaraDaily</span>
           </div>
           <div className="flex items-center gap-2">
             <ThemeToggle />
@@ -76,20 +77,20 @@ export default function GoalInput({ onGenerate, isLoading }: GoalInputProps) {
             <motion.div
               className="font-serif text-6xl sm:text-8xl text-primary/10 mb-4 select-none"
               aria-hidden
-              animate={{ y: [0, -10, 0] }}
-              transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+              animate={prefersReducedMotion ? { y: 0 } : { y: [0, -10, 0] }}
+              transition={prefersReducedMotion ? { duration: 0 } : { duration: 7, repeat: Infinity, ease: "easeInOut" }}
             >
               目標
             </motion.div>
 
-            <h1 className="font-serif text-3xl sm:text-5xl font-bold text-foreground leading-tight mb-4">
-              One Goal.<br />
-              <span className="text-primary">64 Actions.</span>
+            <h1 className="font-serif text-4xl sm:text-6xl font-medium tracking-tight text-foreground leading-[1.08] mb-5">
+              One goal.<br />
+              <span className="text-primary italic">64 actions.</span>
             </h1>
 
-            <p className="text-muted-foreground text-lg sm:text-xl mb-8 max-w-lg mx-auto leading-relaxed">
-              Transform any ambitious goal into a structured 8×8 action plan using the legendary Harada Method —
-              the same framework used by <span className="font-semibold text-foreground">Shohei Ohtani</span>.
+            <p className="text-muted-foreground text-base sm:text-lg mb-9 max-w-md mx-auto leading-relaxed">
+              Transform any ambitious goal into a structured 8×8 action plan using the Harada Method —
+              the same framework used by <span className="font-medium text-foreground">Shohei Ohtani</span>.
             </p>
           </motion.div>
 
@@ -103,21 +104,21 @@ export default function GoalInput({ onGenerate, isLoading }: GoalInputProps) {
             <div className="flex flex-col sm:flex-row gap-3 relative">
               {/* Soft pulsing glow behind the CTA */}
               <motion.div
-                className="hidden sm:block absolute -inset-2 rounded-2xl bg-primary/15 blur-xl -z-10"
-                animate={{ opacity: [0.4, 0.75, 0.4] }}
-                transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+                className="hidden sm:block absolute -inset-2 rounded-xl bg-primary/10 blur-xl -z-10"
+                animate={prefersReducedMotion ? { opacity: 0.4 } : { opacity: [0.3, 0.55, 0.3] }}
+                transition={prefersReducedMotion ? { duration: 0 } : { duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
               />
               <Input
                 value={goal}
                 onChange={(e) => setGoal(e.target.value)}
                 placeholder="What is your one ambitious goal?"
-                className="flex-1 h-14 text-lg px-5 bg-card border-border focus:ring-primary font-sans"
+                className="flex-1 h-14 text-base sm:text-lg px-5 rounded-xl bg-card border-border focus:ring-primary font-sans"
                 disabled={isLoading}
               />
               <Button
                 type="submit"
                 disabled={!goal.trim() || isLoading}
-                className="h-14 px-8 text-base bg-primary text-primary-foreground hover:bg-primary/90 font-sans"
+                className="h-14 px-8 text-base rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 font-sans font-medium"
               >
                 {isLoading ? (
                   <>

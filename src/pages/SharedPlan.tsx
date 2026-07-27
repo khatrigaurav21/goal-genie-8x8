@@ -6,7 +6,7 @@ import { parseHaradaGrid } from "@/lib/schema";
 import { motion } from "framer-motion";
 import { Check, Star, Copy, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { usePillarColors } from "@/lib/theme-colors";
+import { usePillarColors, withAlpha } from "@/lib/theme-colors";
 import ThemeToggle from "@/components/ThemeToggle";
 import { toast } from "sonner";
 
@@ -110,9 +110,9 @@ export default function SharedPlan() {
     <div className="min-h-screen bg-background paper-texture">
       <header className="border-b border-border bg-background/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="container max-w-7xl mx-auto flex items-center justify-between px-4 py-3">
-          <Link to="/" className="font-serif text-xl font-bold text-foreground tracking-wide">
+          <Link to="/" className="font-serif text-xl font-semibold text-foreground tracking-wide">
             原<span className="text-primary">日</span>
-            <span className="text-sm font-sans font-normal text-muted-foreground ml-2">HaraDaily</span>
+            <span className="text-xs font-sans font-medium tracking-[0.16em] uppercase text-muted-foreground ml-2.5">HaraDaily</span>
           </Link>
           <div className="flex gap-2 items-center">
             <ThemeToggle />
@@ -125,7 +125,7 @@ export default function SharedPlan() {
 
       <div className="container max-w-5xl mx-auto px-4 pt-6">
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="bg-card border border-border rounded-lg p-4 mb-6 shadow-sm">
-          <h1 className="font-serif font-bold text-foreground text-xl mb-1">🎯 {gridData.goal}</h1>
+          <h1 className="font-serif font-medium tracking-tight text-foreground text-xl mb-1">🎯 {gridData.goal}</h1>
           <div className="flex items-center gap-3 text-sm text-muted-foreground">
             <span>Strategy: <span className="font-medium text-foreground">{strategyLabels[plan.strategy] || "Balanced"}</span></span>
             <span>•</span>
@@ -162,7 +162,7 @@ export default function SharedPlan() {
                   backgroundColor: cell.type === "center" ? undefined :
                     cell.type === "pillar" ? pillarBg :
                     isDone ? pillarDoneBg :
-                    cell.type === "task" ? `${pillarBg}80` : emptyBg,
+                    cell.type === "task" ? withAlpha(pillarBg ?? "hsl(0 0% 50%)", 0.5) : emptyBg,
                   borderLeft: cell.type === "pillar" ? `3px solid ${pillarBorder}` : undefined,
                   color: cell.type === "center" ? undefined : textColor,
                 }}

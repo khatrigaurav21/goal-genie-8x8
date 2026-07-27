@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import ThemeToggle from "@/components/ThemeToggle";
-import { usePillarColors } from "@/lib/theme-colors";
+import { usePillarColors, withAlpha } from "@/lib/theme-colors";
 import AmbientBlobs from "@/components/AmbientBlobs";
 
 const TIPS = [
@@ -52,9 +52,9 @@ export default function LoadingSkeleton({ goal }: { goal: string }) {
       <AmbientBlobs />
       <header className="border-b border-border bg-background/80 backdrop-blur-sm relative z-10">
         <div className="container max-w-5xl mx-auto flex items-center justify-between px-4 py-4">
-          <div className="font-serif text-2xl font-bold tracking-wide">
+          <div className="font-serif text-2xl font-semibold tracking-wide">
             原<span className="text-primary">日</span>
-            <span className="text-sm font-sans font-normal text-muted-foreground ml-2">HaraDaily</span>
+            <span className="text-xs font-sans font-medium tracking-[0.16em] uppercase text-muted-foreground ml-2.5">HaraDaily</span>
           </div>
           <ThemeToggle />
         </div>
@@ -66,7 +66,7 @@ export default function LoadingSkeleton({ goal }: { goal: string }) {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-8"
         >
-          <h2 className="font-serif text-xl sm:text-2xl font-bold text-foreground mb-2">
+          <h2 className="font-serif text-xl sm:text-2xl font-medium tracking-tight text-foreground mb-2">
             Building your plan…
           </h2>
           <p className="text-muted-foreground text-sm max-w-sm mx-auto">
@@ -91,7 +91,7 @@ export default function LoadingSkeleton({ goal }: { goal: string }) {
                     : cell.isPillarCenter && cell.pillarIdx !== undefined
                     ? pillarColors[cell.pillarIdx]
                     : cell.pillarIdx !== undefined
-                    ? `${pillarColors[cell.pillarIdx]}80`
+                    ? withAlpha(pillarColors[cell.pillarIdx], 0.85)
                     : emptyBg,
                 }}
                 animate={{ opacity: [0.4, 0.8, 0.4] }}
