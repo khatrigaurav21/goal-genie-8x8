@@ -1,20 +1,22 @@
 # HaraDaily
 
-A goal-planning app built around the Harada Method (the "8x8" grid): one core goal
-surrounded by 8 supporting pillars, each broken into 8 concrete tasks — 64 cells
-total. HaraDaily generates that grid for you, tracks daily progress against it,
-and helps you reflect on how the week went. Same framework Shohei Ohtani used to
-map out his career at 16.
+Live at [haradaily.vercel.app](https://haradaily.vercel.app)
+
+A goal-planning app built around the Harada Method (the "8x8" grid). You give it
+one core goal, and it breaks that into 8 supporting pillars, each with 8 concrete
+tasks: 64 cells total. HaraDaily generates that grid for you, tracks daily
+progress against it, and helps you reflect on how the week went. It's the same
+framework Shohei Ohtani used to map out his career at 16.
 
 ## Features
 
-- **Harada grid view** — the full 64-cell grid with per-task completion tracking
+- **Harada grid view.** The full 64-cell grid with per-task completion tracking
   and pillar-completion celebrations.
-- **AI-assisted planning** — generate a starting grid from a single goal, and
+- **AI-assisted planning.** Generate a starting grid from a single goal, and
   expand any task into more detail, via Supabase edge functions.
-- **Daily focus panel** — a pared-down view of what matters today.
-- **Weekly reflection** — a structured check-in against the grid.
-- **Gallery & sharing** — save plans, browse past ones, and share a plan via a
+- **Daily focus panel.** A pared-down view of what matters today.
+- **Weekly reflection.** A structured check-in against the grid.
+- **Gallery & sharing.** Save plans, browse past ones, and share a plan via a
   public link with PNG export.
 - **Light/dark theme.**
 
@@ -54,11 +56,11 @@ before deploying.
 
 ## Supabase
 
-This project uses three Supabase edge functions (`supabase/functions/`):
+This project uses three Supabase edge functions, all under `supabase/functions/`:
 
-- `generate-harada` — generates a starting 8x8 grid from a goal.
-- `ai-expand-task` — expands a single task into more detail.
-- `weekly-reflection` — powers the weekly reflection flow.
+- `generate-harada` generates a starting 8x8 grid from a goal.
+- `ai-expand-task` expands a single task into more detail.
+- `weekly-reflection` powers the weekly reflection flow.
 
 The Supabase project ID and schema migration live under `supabase/`. The
 `VITE_SUPABASE_PUBLISHABLE_KEY` in `.env` is the public anon key, safe for
@@ -77,4 +79,8 @@ npm run test:watch  # watch mode
 Any static host that can serve a Vite build works (Vercel, Netlify, Cloudflare
 Pages, etc). Point the build command at `npm run build` and the output
 directory at `dist/`, and set the three `VITE_SUPABASE_*` environment
-variables in your host's dashboard.
+variables in your host's dashboard. The live version above runs on Vercel.
+
+## License
+
+MIT. See [LICENSE](./LICENSE).
