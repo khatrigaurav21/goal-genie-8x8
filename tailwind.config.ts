@@ -76,7 +76,7 @@ export default {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
-        // Softer, larger radius for card-scale surfaces (hero cards, grid, blocks) —
+        // Softer, larger radius for card-scale surfaces (hero cards, grid, blocks),
         // derived from the same --radius token instead of Tailwind's fixed 1rem,
         // so the two curve languages stay in sync if --radius ever changes.
         xl: "calc(var(--radius) + 6px)",

@@ -50,7 +50,7 @@
     --sage: 150 15% 40%;
     --sage-light: 150 15% 92%;
 
-    /* Raised surface for grid blocks — in light mode the pale pillar-color
+    /* Raised surface for grid blocks. In light mode the pale pillar-color
        washes already do this job, so this just backs up the neutral cells. */
     --grid-surface: 40 22% 90%;
 
@@ -65,7 +65,7 @@
   }
 
   .dark {
-    /* Dark wabi-sabi — charcoal & warm shadows */
+    /* Dark wabi-sabi: charcoal & warm shadows */
     --background: 220 15% 10%;
     --foreground: 40 20% 88%;
 
@@ -107,7 +107,7 @@
 
     /* Raised surface for grid blocks. Dark-mode blocks carry no colored
        fill (pillar washes read muddy on near-black), so lightness has to
-       do the separating work alone — needs a real gap from --background
+       do the separating work alone. It needs a real gap from --background
        (10%), not the ~4-point gap --card (14%) gives it. */
     --grid-surface: 220 10% 21%;
 
@@ -160,7 +160,7 @@
   }
 }
 
-/* Fullscreen ("zoom") view of the grid — solid paper background instead of the
+/* Fullscreen ("zoom") view of the grid: solid paper background instead of the
    translucent one, plus breathing room and vertical centering, since the browser
    fullscreen backdrop is black and stretches the element to the full viewport. */
 .harada-mega-grid:fullscreen {
@@ -205,7 +205,7 @@
   animation: fade-up 0.6s ease-out forwards;
 }
 
-/* Ambient ink-wash blobs — slow drifting color washes behind content */
+/* Ambient ink-wash blobs, slow drifting color washes behind content */
 @keyframes drift-a {
   0%, 100% { transform: translate(0, 0) scale(1); }
   33% { transform: translate(4%, 6%) scale(1.08); }

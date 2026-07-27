@@ -1,10 +1,10 @@
-# HaraDaily
+# Dojo64
 
-Live at [haradaily.vercel.app](https://haradaily.vercel.app)
+Live at [dojo64.vercel.app](https://dojo64.vercel.app)
 
 A goal-planning app built around the Harada Method (the "8x8" grid). You give it
 one core goal, and it breaks that into 8 supporting pillars, each with 8 concrete
-tasks: 64 cells total. HaraDaily generates that grid for you, tracks daily
+tasks: 64 cells total. Dojo64 generates that grid for you, tracks daily
 progress against it, and helps you reflect on how the week went. It's the same
 framework Shohei Ohtani used to map out his career at 16.
 
@@ -31,7 +31,7 @@ backend.
 ```sh
 # 1. Clone the repo
 git clone <this-repo-url>
-cd haradaily
+cd dojo64
 
 # 2. Install dependencies
 npm install

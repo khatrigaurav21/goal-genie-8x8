@@ -2,15 +2,15 @@
 --
 -- The insert policy on this table is intentionally open (anon, WITH CHECK
 -- true) so anyone can generate a share link without signing in. That also
--- means anyone with the public API key — which is meant to be public, it's
--- in every page load — can call the REST API directly and insert arbitrary
+-- means anyone with the public API key, which is meant to be public, it's
+-- in every page load, can call the REST API directly and insert arbitrary
 -- rows, bypassing the app UI entirely. There was previously no size limit on
 -- any column, so a single malicious insert could dump megabytes of junk into
 -- a free-tier database, or content the app's rendering path wasn't built to
 -- expect.
 --
 -- This does not lock the table down (that would break the intended
--- no-login sharing feature) — it just bounds how large a row can be, on
+-- no-login sharing feature), it just bounds how large a row can be, on
 -- top of the client-side validation now enforced by src/lib/schema.ts.
 
 ALTER TABLE public.shared_plans

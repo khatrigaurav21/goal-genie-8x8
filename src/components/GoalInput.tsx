@@ -51,8 +51,8 @@ export default function GoalInput({ onGenerate, isLoading }: GoalInputProps) {
       <header className="border-b border-border bg-background/80 backdrop-blur-sm relative z-10">
         <div className="container max-w-5xl mx-auto flex items-center justify-between px-4 py-4">
           <div className="font-serif text-2xl font-semibold tracking-wide">
-            原<span className="text-primary">日</span>
-            <span className="text-xs font-sans font-medium tracking-[0.16em] uppercase text-muted-foreground ml-2.5">HaraDaily</span>
+            道<span className="text-primary">場</span>
+            <span className="text-xs font-sans font-medium tracking-[0.16em] uppercase text-muted-foreground ml-2.5">Dojo64</span>
           </div>
           <div className="flex items-center gap-2">
             <ThemeToggle />
@@ -89,7 +89,7 @@ export default function GoalInput({ onGenerate, isLoading }: GoalInputProps) {
             </h1>
 
             <p className="text-muted-foreground text-base sm:text-lg mb-9 max-w-md mx-auto leading-relaxed">
-              Transform any ambitious goal into a structured 8×8 action plan using the Harada Method —
+              Transform any ambitious goal into a structured 8×8 action plan using the Harada Method,
               the same framework used by <span className="font-medium text-foreground">Shohei Ohtani</span>.
             </p>
           </motion.div>
@@ -181,7 +181,7 @@ export default function GoalInput({ onGenerate, isLoading }: GoalInputProps) {
           <div className="ink-brush-line mt-12 mb-6" />
 
           <p className="text-xs text-muted-foreground">
-            Inspired by the Harada Method — 8 pillars, 64 tasks, one transformative goal.
+            Inspired by the Harada Method: 8 pillars, 64 tasks, one transformative goal.
           </p>
         </div>
       </main>

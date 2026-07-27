@@ -34,11 +34,11 @@ const Index = () => {
             setActivePlanIndex(0);
             toast.success("Plan copied! You can now track your own progress.");
           } else {
-            toast.error("That plan couldn't be copied — its data looks corrupted.");
+            toast.error("That plan couldn't be copied. Its data looks corrupted.");
           }
         } catch {
           sessionStorage.removeItem("copyPlan");
-          toast.error("That plan couldn't be copied — its data looks corrupted.");
+          toast.error("That plan couldn't be copied. Its data looks corrupted.");
         }
       }
     }

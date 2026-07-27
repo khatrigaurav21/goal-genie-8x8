@@ -53,8 +53,8 @@ export default function LoadingSkeleton({ goal }: { goal: string }) {
       <header className="border-b border-border bg-background/80 backdrop-blur-sm relative z-10">
         <div className="container max-w-5xl mx-auto flex items-center justify-between px-4 py-4">
           <div className="font-serif text-2xl font-semibold tracking-wide">
-            原<span className="text-primary">日</span>
-            <span className="text-xs font-sans font-medium tracking-[0.16em] uppercase text-muted-foreground ml-2.5">HaraDaily</span>
+            道<span className="text-primary">場</span>
+            <span className="text-xs font-sans font-medium tracking-[0.16em] uppercase text-muted-foreground ml-2.5">Dojo64</span>
           </div>
           <ThemeToggle />
         </div>

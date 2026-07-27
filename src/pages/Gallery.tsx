@@ -61,8 +61,8 @@ export default function Gallery() {
       <header className="border-b border-border bg-background/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="container max-w-5xl mx-auto flex items-center justify-between px-4 py-3">
           <Link to="/" className="font-serif text-xl font-semibold text-foreground tracking-wide">
-            原<span className="text-primary">日</span>
-            <span className="text-xs font-sans font-medium tracking-[0.16em] uppercase text-muted-foreground ml-2.5">HaraDaily</span>
+            道<span className="text-primary">場</span>
+            <span className="text-xs font-sans font-medium tracking-[0.16em] uppercase text-muted-foreground ml-2.5">Dojo64</span>
           </Link>
           <div className="flex items-center gap-2">
             <ThemeToggle />

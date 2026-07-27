@@ -29,7 +29,7 @@ export default function SharedPlan() {
     if (!id) return;
     // The id comes straight from the URL. Supabase's query builder parameterizes
     // it (no raw SQL string concatenation happening here), so this isn't an
-    // injection vector — but the row it returns is otherwise untrusted, since
+    // injection vector, but the row it returns is otherwise untrusted, since
     // the shared_plans table accepts unauthenticated, unvalidated inserts from
     // anyone. Validate its shape before it ever reaches the grid renderer.
     supabase
@@ -111,8 +111,8 @@ export default function SharedPlan() {
       <header className="border-b border-border bg-background/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="container max-w-7xl mx-auto flex items-center justify-between px-4 py-3">
           <Link to="/" className="font-serif text-xl font-semibold text-foreground tracking-wide">
-            原<span className="text-primary">日</span>
-            <span className="text-xs font-sans font-medium tracking-[0.16em] uppercase text-muted-foreground ml-2.5">HaraDaily</span>
+            道<span className="text-primary">場</span>
+            <span className="text-xs font-sans font-medium tracking-[0.16em] uppercase text-muted-foreground ml-2.5">Dojo64</span>
           </Link>
           <div className="flex gap-2 items-center">
             <ThemeToggle />

@@ -201,7 +201,7 @@ export default function HaradaGridView({
     }
   };
 
-  const shareText = `🎯 My Harada Method goal: "${data.goal}" — broken down into 8 pillars and 64 actionable tasks! ${progressPercent}% complete!`;
+  const shareText = `🎯 My Harada Method goal: "${data.goal}", broken down into 8 pillars and 64 actionable tasks! ${progressPercent}% complete!`;
   const shareUrl = window.location.href;
 
   const handleDownload = async () => {
@@ -213,7 +213,7 @@ export default function HaradaGridView({
         backgroundColor: isDark ? "#191d24" : "#f5f0e8",
       });
       const link = document.createElement("a");
-      link.download = `haradaily-${data.goal.slice(0, 30).replace(/\s+/g, "-")}.png`;
+      link.download = `dojo64-${data.goal.slice(0, 30).replace(/\s+/g, "-")}.png`;
       link.href = dataUrl;
       link.click();
       toast.success("Grid saved as image!");
@@ -286,10 +286,10 @@ export default function HaradaGridView({
             {/* Brand */}
             <button onClick={requestReset} className="flex items-center gap-2 shrink-0 group">
               <span className="font-serif text-lg sm:text-xl font-semibold text-foreground tracking-wide">
-                原<span className="text-primary">日</span>
+                道<span className="text-primary">場</span>
               </span>
               <span className="hidden sm:inline text-xs font-sans font-medium tracking-[0.16em] uppercase text-muted-foreground group-hover:text-foreground transition-colors">
-                HaraDaily
+                Dojo64
               </span>
             </button>
 
@@ -527,11 +527,11 @@ export default function HaradaGridView({
                             className="w-full flex-1 rounded-[1.5px] origin-bottom"
                             style={{
                               // Filled segments use the saturated border-tier color, not the pale
-                              // wash tier (pillarColors) — that tier is tuned for large-area block
+                              // wash tier (pillarColors). That tier is tuned for large-area block
                               // backgrounds and reads as nearly invisible at this size against the
                               // secondary track, especially in dark mode. (Previously this also
                               // appended a hex alpha suffix like `d9`/`c0` directly onto an
-                              // `hsl(...)` string to distinguish in-progress from complete — that's
+                              // `hsl(...)` string to distinguish in-progress from complete. That's
                               // invalid CSS, so the browser silently dropped the whole declaration
                               // for every in-progress segment, i.e. almost always. The in-progress
                               // vs. complete distinction now lives entirely in the opacity/scale
@@ -660,9 +660,9 @@ export default function HaradaGridView({
                   ? (isPillarComplete ? pillarDoneColors[block.pillarIndex] : pillarColors[block.pillarIndex])
                   : undefined;
                 // Dark mode: keep the block surface neutral and let color live in the
-                // border + pillar-label chip only — full saturated fills read muddy on near-black.
+                // border + pillar-label chip only. Full saturated fills read muddy on near-black.
                 // Uses the dedicated --grid-surface token (not --card) since it needs a real
-                // lightness gap from --background on its own — dark blocks get no colored fill
+                // lightness gap from --background on its own. Dark blocks get no colored fill
                 // to help separate them, unlike light mode's pale pillar washes.
                 const blockBg = block.isCenter
                   ? undefined
@@ -679,13 +679,13 @@ export default function HaradaGridView({
                 const glowLeft = dCol < 0;
                 const glowRight = dCol > 0;
                 // The true outer edge of the whole mega-grid (the side facing away from
-                // everything, toward the page) gets no border at all — left fully open.
+                // everything, toward the page) gets no border at all. Left fully open.
                 const outsideTop = block.blockRow === 0;
                 const outsideBottom = block.blockRow === 2;
                 const outsideLeft = block.blockCol === 0;
                 const outsideRight = block.blockCol === 2;
-                // blockBorderColor is an hsl(H, S%, L%) functional string, not a hex literal —
-                // use withAlpha() rather than concatenating a hex suffix onto it (that's invalid
+                // blockBorderColor is an hsl(H, S%, L%) functional string, not a hex literal.
+                // Use withAlpha() rather than concatenating a hex suffix onto it (that's invalid
                 // CSS and gets silently dropped, which is why these directional borders/glows
                 // weren't actually rendering).
                 const faintBorderColor = withAlpha(blockBorderColor ?? "hsl(0 0% 50%)", isDark ? 0.26 : 0.11);
@@ -1031,7 +1031,7 @@ export default function HaradaGridView({
               )}
             </AnimatePresence>
 
-            {/* Legend — also doubles as a Focus Mode entry point, same icon language as the grid */}
+            {/* Legend, also doubles as a Focus Mode entry point, same icon language as the grid */}
             <div className="mt-6 flex flex-wrap gap-2 justify-center">
               {data.pillars.map((p, i) => {
                 const isComplete = completedPillarSet.has(i);
@@ -1116,7 +1116,7 @@ export default function HaradaGridView({
         )}
       </AnimatePresence>
 
-      {/* Confirm before discarding an in-progress plan — there's no persistence,
+      {/* Confirm before discarding an in-progress plan. There's no persistence,
           so this is the only safety net against an accidental click. */}
       <AlertDialog open={confirmResetOpen} onOpenChange={setConfirmResetOpen}>
         <AlertDialogContent>

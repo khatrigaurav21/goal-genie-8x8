@@ -16,7 +16,7 @@ interface DailyFocusPanelProps {
 
 export default function DailyFocusPanel({ data, completedTasks, onToggleTask, locked = false }: DailyFocusPanelProps) {
   const [refreshKey, setRefreshKey] = useState(0);
-  // Tasks that were just checked off — kept visible briefly with a strike-through +
+  // Tasks that were just checked off. Kept visible briefly with a strike-through +
   // success tint before they slide out, so completion reads as a satisfying moment
   // rather than an abrupt disappearance.
   const [justCompleted, setJustCompleted] = useState<Set<string>>(new Set());

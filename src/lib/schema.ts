@@ -3,7 +3,7 @@ import { z } from "zod";
 // Runtime validation for HaradaGrid data coming from anywhere outside our own
 // control: the AI edge function, sessionStorage, or the public shared_plans
 // table (which anyone can insert into via the anon key, unvalidated). A `TS`
-// type cast gives zero runtime protection — this is what actually stops a
+// type cast gives zero runtime protection. This is what actually stops a
 // malformed payload from crashing the grid renderer with a blank screen.
 export const pillarSchema = z.object({
   name: z.string().min(1).max(200),

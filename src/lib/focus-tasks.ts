@@ -36,7 +36,7 @@ export function rankTasksByPriority(data: HaradaGrid): PriorityTask[] {
 
 // A stable set of "today's" priority task keys, pinned for the whole plan (not
 // filtered by completion) so a completion-rate metric against it has a fixed
-// denominator — unlike the rotating Today's Focus list, which intentionally drops
+// denominator, unlike the rotating Today's Focus list, which intentionally drops
 // completed tasks and backfills from the remaining pool.
 export function pinnedTodaysFocusKeys(data: HaradaGrid, limit = 5): string[] {
   return rankTasksByPriority(data).slice(0, limit).map((t) => t.key);

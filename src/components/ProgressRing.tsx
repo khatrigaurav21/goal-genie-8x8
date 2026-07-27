@@ -11,7 +11,7 @@ interface ProgressRingProps {
 export default function ProgressRing({ percent, size = 36, ticks = false, label }: ProgressRingProps) {
   const prefersReducedMotion = useReducedMotion();
   // Displayed number tweens in lockstep with the ring's own stroke animation
-  // (same 0.8s/easeOut) instead of snapping — the count-up is the legibility
+  // (same 0.8s/easeOut) instead of snapping. The count-up is the legibility
   // cue that reinforces progress actually moved.
   const [displayPercent, setDisplayPercent] = useState(prefersReducedMotion ? percent : 0);
   const prevPercentRef = useRef(prefersReducedMotion ? percent : 0);
@@ -43,7 +43,7 @@ export default function ProgressRing({ percent, size = 36, ticks = false, label 
   return (
     <div className="relative shrink-0" style={{ width: size, height: size }}>
       <svg width={size} height={size} className="-rotate-90">
-        {/* Dial bezel ticks — purely decorative, gives it an instrument-gauge feel */}
+        {/* Dial bezel ticks, purely decorative, gives it an instrument-gauge feel */}
         {ticks && (
           <g>
             {Array.from({ length: tickCount }).map((_, i) => {

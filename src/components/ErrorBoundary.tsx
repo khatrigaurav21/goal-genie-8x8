@@ -34,7 +34,7 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
         <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-4 px-4 text-center">
           <p className="font-serif text-2xl font-bold text-foreground">Something went wrong</p>
           <p className="text-sm text-muted-foreground max-w-sm">
-            This page hit an unexpected error. Your other plans and data are safe — try heading back home.
+            This page hit an unexpected error. Your other plans and data are safe. Try heading back home.
           </p>
           <button
             onClick={this.handleReset}

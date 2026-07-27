@@ -20,7 +20,7 @@ export function useIsDark() {
 // Dark mode: deep muted backgrounds with light text
 //
 // Indices 0 and 7 use hue 78 (olive/chartreuse) and 114 (spring green) instead of
-// the original 4 and 20 — both of those sat within ~20deg of --primary's hue 13
+// the original 4 and 20, both of which sat within ~20deg of --primary's hue 13
 // (terracotta), so the "goal" center cell didn't read as visually distinct from
 // two of the eight pillar categories. The remaining six hues are unchanged.
 export const PILLAR_COLORS_LIGHT = [
@@ -90,8 +90,8 @@ export const PILLAR_BORDER_COLORS_DARK = [
 ];
 
 // Appends an alpha channel to one of the hsl(H, S%, L%) strings above, using
-// valid CSS. Do NOT hand-roll `${color}80`-style hex-alpha suffixes on these —
-// they're functional hsl() notation, not hex literals, so a bare hex suffix is
+// valid CSS. Do NOT hand-roll `${color}80`-style hex-alpha suffixes on these.
+// They're functional hsl() notation, not hex literals, so a bare hex suffix is
 // invalid CSS and the browser silently drops the entire declaration.
 export function withAlpha(hslColor: string, alpha: number): string {
   const match = hslColor.match(/^hsl\(\s*([\d.]+)\s*,\s*([\d.]+%)\s*,\s*([\d.]+%)\s*\)$/);

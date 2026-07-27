@@ -13,7 +13,7 @@ interface StoredState {
   completedDates: Record<string, string>; // ritual id -> ISO date last completed
 }
 
-const STORAGE_KEY = "haradaily-rituals";
+const STORAGE_KEY = "dojo64-rituals";
 
 function todayISO() {
   return new Date().toISOString().slice(0, 10);
@@ -34,7 +34,7 @@ function loadState(): StoredState {
   }
 }
 
-// Small, user-authored daily habits — separate from the 64 one-off Harada tasks.
+// Small, user-authored daily habits, separate from the 64 one-off Harada tasks.
 // Unlike the rest of the plan (which is session-only), this persists to
 // localStorage since it's low-stakes and benefits most from surviving a reload.
 // Completion resets each calendar day by construction: a ritual only reads as

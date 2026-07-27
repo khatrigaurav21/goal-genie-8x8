@@ -21,7 +21,7 @@ interface GlowingEffectProps {
 //   of the same animation engine.
 // - the "default" variant's gradient uses this app's own accent tokens
 //   (vermillion / gold / sage / indigo) instead of a generic four-color rainbow,
-//   so the glow reads as part of HaraDaily's palette rather than a foreign effect.
+//   so the glow reads as part of Dojo64's palette rather than a foreign effect.
 const GlowingEffect = memo(
   ({
     blur = 0,
